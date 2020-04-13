@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { defaultPassword } from "../common/config";
 
 const User = new mongoose.Schema({
   _id: {
@@ -11,7 +12,7 @@ const User = new mongoose.Schema({
   },
   password: {
     type: String,
-    default: "$2y$10$EO8svgIoIJTEclQZ8XgvOe5IkDXw2ODgQnnIK8.L0dmIIrjkI6hKC"
+    default: defaultPassword
   },
   dp: {
     type: String
@@ -32,9 +33,18 @@ const User = new mongoose.Schema({
     }
   },
   achievements: {
-    first: [String],
-    second: [String],
-    third: [String]
+    first: {
+      type: [String],
+      default: []
+    },
+    second: {
+      type: [String],
+      default: []
+    },
+    third: {
+      type: [String],
+      default: []
+    }
   },
   role: {
     type: String,
