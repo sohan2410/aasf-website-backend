@@ -37,4 +37,5 @@ export default express
     controller.uploadUsers
   )
   .post("/login", controller.login)
-  .post("/changepassword", isAuthenticated, controller.changePassword);
+  .post("/changepassword", isAuthenticated, controller.changePassword)
+  .get("/details", isAuthenticated, controller.getUserDetails);

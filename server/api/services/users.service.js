@@ -53,7 +53,10 @@ class UsersService {
 
   async getUserDetails(roll) {
     try {
-      return await userModel.findById(roll, "-password");
+      const user = await userModel.findById(roll, "-password");
+      if (!user) throw { status: 400, message: "User not found" };
+
+      return user;
     } catch (err) {
       throw err;
     }

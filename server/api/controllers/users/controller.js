@@ -25,6 +25,18 @@ export class Controller {
     }
   }
 
+  async getUserDetails(req, res) {
+    try {
+      const { roll } = req.user;
+      const user = await UsersService.getUserDetails(roll);
+      res.status(200).send({ user, message: "Details successfully fetched" });
+    } catch (err) {
+      res
+        .status(err.status || 500)
+        .send({ message: err.message || "Some error has occurred" });
+    }
+  }
+
   async changePassword(req, res) {
     try {
       const { roll } = req.user;
