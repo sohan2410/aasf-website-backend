@@ -44,7 +44,7 @@ class UsersService {
 
       const hash = await bcrypt.hash(newPassword, saltRounds);
       await userModel.findByIdAndUpdate(roll, {
-        password: hash
+        password: hash,
       });
     } catch (err) {
       throw err;
@@ -62,6 +62,22 @@ class UsersService {
     }
   }
 
+  async editUserDetails(roll, data) {
+    try {
+      if (data.password) {
+        data.password = await bcrypt.hash(data.password, saltRounds);
+      }
+      const user = await userModel.findByIdAndUpdate(roll, data, {
+        new: true,
+        select: { password: 0 },
+      });
+      if (!user) throw { status: 400, message: "User not found" };
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   generateToken(roll) {
     const today = new Date();
     const exp = new Date(today);
@@ -70,7 +86,7 @@ class UsersService {
     return jwt.sign(
       {
         roll,
-        exp: exp.getTime() / 1000
+        exp: exp.getTime() / 1000,
       },
       jwtSecret
     );

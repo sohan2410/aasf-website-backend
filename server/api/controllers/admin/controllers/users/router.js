@@ -26,4 +26,5 @@ const upload = multer({
 
 export default express
   .Router()
-  .post("/upload", upload.single("users"), controller.uploadUsers);
+  .post("/upload", upload.single("users"), controller.uploadUsers)
+  .put("/:roll", controller.editUserDetails);
