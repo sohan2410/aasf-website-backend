@@ -86,10 +86,13 @@ class EventsService {
           achievement["achievements.third"] = eventData.name;
 
         promises.push(
-          userModel.findByIdAndUpdate(winner, {
-            $inc: points,
-            $push: achievement,
-          })
+          userModel.updateMany(
+            { _id: { $in: winner } },
+            {
+              $inc: points,
+              $push: achievement,
+            }
+          )
         );
       });
 

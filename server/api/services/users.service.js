@@ -81,7 +81,7 @@ class UsersService {
 
   async getLeaderboard() {
     try {
-      const leaderboard = await userModel.aggregate([
+      const leaderboardPromise = userModel.aggregate([
         {
           $match: { role: "user" },
         },
@@ -105,9 +105,13 @@ class UsersService {
           },
         },
       ]);
-      const events = await eventModel.find({
+      const eventsPromise = eventModel.find({
         $or: [{ qr: true }, { winners: true }],
       });
+      const [leaderboard, events] = await Promise.all([
+        leaderboardPromise,
+        eventsPromise,
+      ]);
       const totalScore = {
         technical: 0,
         managerial: 0,
