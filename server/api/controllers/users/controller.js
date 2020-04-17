@@ -1,18 +1,6 @@
 import UsersService from "../../services/users.service";
 
 export class Controller {
-  async uploadUsers(req, res) {
-    try {
-      if (req.file) await UsersService.uploadUsers(req.file.filename);
-      else throw { status: 400, message: "Please upload a valid file" };
-      res.status(200).send({ message: "Users Uploaded Successfully" });
-    } catch (err) {
-      res
-        .status(err.status || 500)
-        .send({ message: err.message || "Some error has occurred" });
-    }
-  }
-
   async login(req, res) {
     try {
       const { roll, password } = req.body;
@@ -34,6 +22,21 @@ export class Controller {
       res
         .status(err.status || 500)
         .send({ message: err.message || "Some error has occurred" });
+    }
+  }
+
+  async getLeaderboard(req, res) {
+    try {
+      const { leaderboard, totalScore } = await UsersService.getLeaderboard();
+      res.status(200).send({
+        leaderboard,
+        totalScore,
+        message: "Leaderboard successfully fetched",
+      });
+    } catch (err) {
+      res.status(err.status || 500).send({
+        message: err.message || "Something went wrong, please try again.",
+      });
     }
   }
 
