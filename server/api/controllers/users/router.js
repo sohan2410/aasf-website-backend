@@ -7,4 +7,5 @@ export default express
   .Router()
   .post("/login", controller.login)
   .post("/changepassword", isAuthenticated, controller.changePassword)
-  .get("/details", isAuthenticated, controller.getUserDetails);
+  .get("/details", isAuthenticated, controller.getUserDetails)
+  .get("/leaderboard", isAuthenticated, controller.getLeaderboard);

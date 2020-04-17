@@ -25,6 +25,21 @@ export class Controller {
     }
   }
 
+  async getLeaderboard(req, res) {
+    try {
+      const { leaderboard, totalScore } = await UsersService.getLeaderboard();
+      res.status(200).send({
+        leaderboard,
+        totalScore,
+        message: "Leaderboard successfully fetched",
+      });
+    } catch (err) {
+      res.status(err.status || 500).send({
+        message: err.message || "Something went wrong, please try again.",
+      });
+    }
+  }
+
   async changePassword(req, res) {
     try {
       const { roll } = req.user;

@@ -42,7 +42,9 @@ class EventsService {
 
   async getEvents() {
     try {
-      return await eventModel.find({}, null, { sort: { startDate: 1 } });
+      return await eventModel.find({}, "-qr -winners -importance", {
+        sort: { startDate: 1 },
+      });
     } catch (err) {
       throw err;
     }
@@ -64,7 +66,9 @@ class EventsService {
 
   async addWinners(winners, eventId) {
     try {
-      const eventData = await eventModel.findById(eventId);
+      const eventData = await eventModel.findByIdAndUpdate(eventId, {
+        winners: true,
+      });
       if (!eventData) throw { message: "Event not found", status: 400 };
 
       const promises = [];
@@ -97,11 +101,12 @@ class EventsService {
 
   async generateQRCode(id, day) {
     try {
-      const event = await eventModel.findById(id);
-      if (!event) throw { message: "Event not found", status: 400 };
-
-      if (day > event.numberOfDays)
-        throw { message: "Invalid day", status: 400 };
+      const event = await eventModel.findOneAndUpdate(
+        { _id: id, numberOfDays: { $gte: day } },
+        { qr: true }
+      );
+      if (!event)
+        throw { message: "Event not found or Invalid Day Number", status: 400 };
 
       const encrypt = crypto.createCipher(encryptionAlgorithm, encryptionKey);
       let hash = encrypt.update(

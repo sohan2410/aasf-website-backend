@@ -28,6 +28,14 @@ const Event = new mongoose.Schema({
     ],
   },
   importance: Number,
+  qr: {
+    type: Boolean,
+    default: false,
+  },
+  winners: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export default mongoose.model("Event", Event);

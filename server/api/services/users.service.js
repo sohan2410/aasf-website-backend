@@ -4,6 +4,7 @@ import * as jwt from "jsonwebtoken";
 
 import l from "../../common/logger";
 import userModel from "../../models/user";
+import eventModel from "../../models/event";
 import { jwtSecret } from "../../common/config";
 
 const saltRounds = 10;
@@ -73,6 +74,51 @@ class UsersService {
       });
       if (!user) throw { status: 400, message: "User not found" };
       return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getLeaderboard() {
+    try {
+      const leaderboard = await userModel.aggregate([
+        {
+          $match: { role: "user" },
+        },
+        {
+          $addFields: {
+            totalScore: {
+              $add: ["$score.technical", "$score.managerial", "$score.oratory"],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            totalScore: 1,
+          },
+        },
+        {
+          $sort: {
+            totalScore: -1,
+          },
+        },
+      ]);
+      const events = await eventModel.find({
+        $or: [{ qr: true }, { winners: true }],
+      });
+      const totalScore = {
+        technical: 0,
+        managerial: 0,
+        oratory: 0,
+      };
+      events.forEach((event) => {
+        if (event.qr) totalScore[event.category] += event.importance * 5 + 5;
+        if (event.winners)
+          totalScore[event.category] += event.importance * 5 + 10;
+      });
+      return { leaderboard, totalScore };
     } catch (err) {
       throw err;
     }
