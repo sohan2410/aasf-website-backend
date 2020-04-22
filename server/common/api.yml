@@ -4,99 +4,78 @@ info:
   description: Backend for AASF Website
   version: 1.0.0
 servers:
-  - url: /api/v1
+  - url: /api
 tags:
-  - name: Examples
-    description: Simple example endpoints
+  - name: Users
+    description: Operations related to users
   - name: Specification
     description: The swagger API specification
+
 paths:
-  /examples:
-    get:
-      tags:
-        - Examples
-      description: Fetch all examples
-      responses:
-        200:
-          description: Return the example with the specified id
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Example'
-        4XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        5XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+  /users/login:
     post:
       tags:
-        - Examples
-      description: Create a new example
+        - Users
+      servers:
+        - url: /
+      description: Log a user in
       requestBody:
-        description: an example
+        description: Roll number and password
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ExampleBody'
+              $ref: '#/components/schemas/LoginBody'
         required: true
       responses:
-        201:
-          description: Return the example with the specified id
+        200:
+          description: Return token and success message
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Example'
-        4XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        5XX:
-          description: Example not found
+                $ref: '#/components/schemas/LoginResponse'
+        400:
+          description: User not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /examples/{id}:
-    get:
+        401:
+          description: Invalid Password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Could not login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/changepassword:
+    post:
       tags:
-        - Examples
-      parameters:
-        - name: id
-          in: path
-          description: The id of the example to retrieve
-          required: true
-          schema:
-            type: integer
+        - Users
+      servers:
+        - url: /
+      description: Change user's password
+      security:
+        - Bearer: []
+      requestBody:
+        description: Current Password and New Password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordBody'
+        required: true
       responses:
         200:
-          description: Return the example with the specified id
+          description: Return success message
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Example'
-        4XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        5XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/MessageResponse'
+
   /spec:
     get:
       tags:
@@ -106,26 +85,58 @@ paths:
           description: Return the API specification
           content: {}
 components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: Provide a valid JWT token
+
   schemas:
-    Example:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 3
-        name:
-          type: string
-          example: example 3
     Error:
       type: object
+      properties:
+        message:
+          type: string
       additionalProperties: true
 
-    ExampleBody:
-      title: example
-      required:
-        - name
+    MessageResponse:
       type: object
       properties:
-        name:
+        message:
           type: string
-          example: no_stress
+
+    LoginBody:
+      required:
+        - roll
+        - password
+      type: object
+      properties:
+        roll:
+          type: string
+          example: 2018BCS-000
+        password:
+          type: string
+          example: yourPassword
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: ey.......9X
+        message:
+          type: string
+          example: Successfully Logged in!
+
+    ChangePasswordBody:
+      type: object
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+          example: yourCurrentPassword
+        newPassword:
+          type: string
+          example: yourNewPassword

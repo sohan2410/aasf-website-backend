@@ -11,5 +11,5 @@ export default function routes(app) {
   app.use("/users", usersRouter);
   app.use("/events", eventsRouter);
   app.use("/admin", isAuthenticated, isAdmin, adminRouter);
-  app.use("/api/v1/examples", examplesRouter);
+  app.use("/examples", examplesRouter);
 }
