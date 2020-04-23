@@ -27,9 +27,10 @@ const upload = multer({
 export default express
   .Router()
   .get("/", controller.getEvents)
-  .get("/qr/:id/:day", controller.generateQRCode)
   .post("/", controller.addEvent)
+  .put("/:id", controller.editEventDetails)
+  .delete("/:id", controller.deleteEvent)
+  .get("/qr/:id/:day", controller.generateQRCode)
   .post("/upload", upload.single("events"), controller.uploadEvents)
   .post("/goodies", controller.addGoodies)
-  .post("/winners", controller.addWinners)
-  .put("/:id", controller.editEventDetails);
+  .post("/winners", controller.addWinners);
