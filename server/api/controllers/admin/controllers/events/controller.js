@@ -50,6 +50,17 @@ export class Controller {
     }
   }
 
+  async deleteEvent(req, res) {
+    try {
+      await EventsService.deleteEvent(req.params.id);
+      res.status(200).send({ message: "Event deleted Successfully" });
+    } catch (err) {
+      res.status(err.status || 500).send({
+        message: err.message || "Something went wrong, please try again.",
+      });
+    }
+  }
+
   async addGoodies(req, res) {
     try {
       await EventsService.addGoodies(req.body.roll, req.body.eventId);

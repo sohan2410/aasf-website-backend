@@ -10,6 +10,8 @@ tags:
     description: Operations related to users
   - name: Events
     description: Operations related to events
+  - name: Admin
+    description: Operations related to admin
   - name: Specification
     description: The swagger API specification
 
@@ -142,6 +144,207 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/MarkAttendanceBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /admin/users/{roll}:
+    put:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Edit user details
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: roll
+          schema:
+            type: string
+          required: true
+          description: Roll number of the student
+      requestBody:
+        description: Updated details of the student
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditUserBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditUserResponse'
+
+  /admin/events:
+    get:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      security:
+        - Bearer: []
+      description: Get events
+      responses:
+        200:
+          description: Return events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsResponse'
+    post:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Add an event
+      security:
+        - Bearer: []
+      requestBody:
+        description: Event details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddEventBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /admin/events/{id}:
+    put:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Edit event details
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: _id of the event
+      requestBody:
+        description: Updated details of the event
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditEventBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+    delete:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Delete an event
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: _id of the event
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /admin/events/qr/{id}/{day}:
+    get:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Get QR Code for the event for attendance
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: _id of the event
+        - in: path
+          name: day
+          schema:
+            type: number
+          required: true
+          description: Number of day of the event
+      responses:
+        200:
+          description: Return QR Code and a success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRResponse'
+
+  /admin/events/goodies:
+    post:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Add a goodie winner
+      security:
+        - Bearer: []
+      requestBody:
+        description: Goodie winner roll number and event ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddGoodieBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /admin/events/winners:
+    post:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Add contest winners
+      security:
+        - Bearer: []
+      requestBody:
+        description: 2D array of winners and event ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddWinnersBody'
         required: true
       responses:
         200:
@@ -318,7 +521,165 @@ components:
 
     MarkAttendanceBody:
       type: object
+      required:
+        - hash
       properties:
         hash:
           type: string
           description: Encrypted hash related to the particular event
+
+    EditUserBody:
+      type: object
+      properties:
+        name:
+          type: string
+        password:
+          type: string
+        dp:
+          type: string
+        role:
+          type: string
+        score:
+          type: object
+          properties:
+            technical:
+              type: number
+            managerial:
+              type: number
+            oratory:
+              type: number
+        achievements:
+          type: object
+          properties:
+            first:
+              type: array
+              items:
+                type: string
+            second:
+              type: array
+              items:
+                type: string
+            third:
+              type: array
+              items:
+                type: string
+
+    EditUserResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            password:
+              type: string
+            dp:
+              type: string
+            role:
+              type: string
+            score:
+              type: object
+              properties:
+                technical:
+                  type: number
+                managerial:
+                  type: number
+                oratory:
+                  type: number
+            achievements:
+              type: object
+              properties:
+                first:
+                  type: array
+                  items:
+                    type: string
+                second:
+                  type: array
+                  items:
+                    type: string
+                third:
+                  type: array
+                  items:
+                    type: string
+
+    AddEventBody:
+      type: object
+      required:
+        - name
+        - startDate
+        - numberOfDays
+        - category
+        - importance
+      properties:
+        name:
+          type: string
+        startDate:
+          type: string
+          description: Format YYYY-MM-DD
+        numberOfDays:
+          type: number
+        category:
+          type: string
+          enum: [technical, managerial, oratory, miscellaneous]
+        importance:
+          type: number
+
+    EditEventBody:
+      type: object
+      properties:
+        name:
+          type: string
+        startDate:
+          type: string
+          description: Format YYYY-MM-DD
+        numberOfDays:
+          type: number
+        category:
+          type: string
+          enum: [technical, managerial, oratory, miscellaneous]
+        importance:
+          type: number
+
+    QRResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        qr:
+          type: string
+          description: QR Code in base64 URL encoded form
+
+    AddGoodieBody:
+      type: object
+      required:
+        - roll
+        - eventId
+      properties:
+        roll:
+          type: string
+        eventId:
+          type: string
+
+    AddWinnersBody:
+      type: object
+      required:
+        - eventId
+        - winners
+      properties:
+        eventId:
+          type: string
+        winners:
+          type: array
+          items:
+            description: 2D Array of 1st, 2nd and 3rd, omit 3rd or 2nd if needed
+            type: array
+            items:
+              type: string
+              description: Roll number of the winner
+              example: 2020IPG-000
+          example: [[2018IPG-000, 2018IPG-001, 2018IPG-002], [2018IPG-003]]

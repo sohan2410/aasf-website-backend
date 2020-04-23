@@ -29,9 +29,9 @@ class EventsService {
     }
   }
 
-  async editEventDetails(id, event) {
+  async editEventDetails(id, data) {
     try {
-      const event = await eventModel.findByIdAndUpdate(id, event, {
+      const event = await eventModel.findByIdAndUpdate(id, data, {
         new: true,
       });
       if (!event) throw { message: "Event not found", status: 400 };
@@ -45,6 +45,14 @@ class EventsService {
       return await eventModel.find({}, "-qr -winners -importance", {
         sort: { startDate: 1 },
       });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteEvent(id) {
+    try {
+      await eventModel.findByIdAndDelete(id);
     } catch (err) {
       throw err;
     }
