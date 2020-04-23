@@ -8,6 +8,8 @@ servers:
 tags:
   - name: Users
     description: Operations related to users
+  - name: Events
+    description: Operations related to events
   - name: Specification
     description: The swagger API specification
 
@@ -76,6 +78,79 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
 
+  /users/details:
+    get:
+      tags:
+        - Users
+      servers:
+        - url: /
+      description: Get details of a user
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Return details of user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailsResponse'
+
+  /users/leaderboard:
+    get:
+      tags:
+        - Users
+      servers:
+        - url: /
+      description: Get leaderboard
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Return leaderboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaderboardResponse'
+
+  /events:
+    get:
+      tags:
+        - Events
+      servers:
+        - url: /
+      description: Get events
+      responses:
+        200:
+          description: Return events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsResponse'
+
+  /events/attendance:
+    post:
+      tags:
+        - Events
+      servers:
+        - url: /
+      description: Mark attendance for a particular event
+      security:
+        - Bearer: []
+      requestBody:
+        description: The encrypted hash related to the event
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkAttendanceBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
   /spec:
     get:
       servers:
@@ -86,6 +161,7 @@ paths:
         200:
           description: Return the API specification
           content: {}
+
 components:
   securitySchemes:
     Bearer:
@@ -142,3 +218,107 @@ components:
         newPassword:
           type: string
           example: yourNewPassword
+
+    UserDetailsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Details fetched successfully
+        user:
+          type: object
+          properties:
+            _id:
+              type: string
+              description: Roll number of the student
+              example: 2020BCS-000
+            name:
+              type: string
+              description: Name of the student
+            dp:
+              type: string
+              description: The profile picture of the student(if exists)
+            role:
+              type: string
+            score:
+              type: object
+              properties:
+                technical:
+                  type: number
+                managerial:
+                  type: number
+                oratory:
+                  type: number
+            achievements:
+              type: object
+              properties:
+                first:
+                  type: array
+                  items:
+                    type: string
+                second:
+                  type: array
+                  items:
+                    type: string
+                third:
+                  type: array
+                  items:
+                    type: string
+
+    LeaderboardResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Leaderboard succesfully fetched
+        totalScore:
+          type: object
+          description: Highest score possible in each category
+          properties:
+            technical:
+              type: number
+            managerial:
+              type: number
+            oratory:
+              type: number
+        leaderboard:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              name:
+                type: string
+              totalScore:
+                type: number
+
+    EventsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              startDate:
+                type: string
+              numberOfDays:
+                type: string
+              category:
+                type: string
+              attendance:
+                type: array
+                items:
+                  type: number
+
+    MarkAttendanceBody:
+      type: object
+      properties:
+        hash:
+          type: string
+          description: Encrypted hash related to the particular event
