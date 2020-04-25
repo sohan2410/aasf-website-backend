@@ -28,7 +28,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginBody'
+              $ref: "#/components/schemas/LoginBody"
         required: true
       responses:
         200:
@@ -36,28 +36,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: "#/components/schemas/LoginResponse"
         400:
           description: User not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
         401:
           description: Invalid Password
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
         500:
           description: Could not login
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
-  /users/changepassword:
-    post:
+  /users/password:
+    put:
       tags:
         - Users
       servers:
@@ -70,7 +70,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangePasswordBody'
+              $ref: "#/components/schemas/ChangePasswordBody"
         required: true
       responses:
         200:
@@ -78,7 +78,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
 
   /users/details:
     get:
@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetailsResponse'
+                $ref: "#/components/schemas/UserDetailsResponse"
 
   /users/leaderboard:
     get:
@@ -112,7 +112,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LeaderboardResponse'
+                $ref: "#/components/schemas/LeaderboardResponse"
 
   /events:
     get:
@@ -127,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventsResponse'
+                $ref: "#/components/schemas/EventsResponse"
 
   /events/attendance:
     post:
@@ -143,7 +143,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MarkAttendanceBody'
+              $ref: "#/components/schemas/MarkAttendanceBody"
         required: true
       responses:
         200:
@@ -151,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
 
   /admin/users/{roll}:
     put:
@@ -174,7 +174,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EditUserBody'
+              $ref: "#/components/schemas/EditUserBody"
         required: true
       responses:
         200:
@@ -182,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EditUserResponse'
+                $ref: "#/components/schemas/EditUserResponse"
 
   /admin/events:
     get:
@@ -199,7 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventsResponse'
+                $ref: "#/components/schemas/EventsResponse"
     post:
       tags:
         - Admin
@@ -213,7 +213,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddEventBody'
+              $ref: "#/components/schemas/AddEventBody"
         required: true
       responses:
         200:
@@ -221,7 +221,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
 
   /admin/events/{id}:
     put:
@@ -244,7 +244,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EditEventBody'
+              $ref: "#/components/schemas/EditEventBody"
         required: true
       responses:
         200:
@@ -252,7 +252,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
     delete:
       tags:
         - Admin
@@ -274,7 +274,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
 
   /admin/events/qr/{id}/{day}:
     get:
@@ -304,7 +304,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QRResponse'
+                $ref: "#/components/schemas/QRResponse"
 
   /admin/events/goodies:
     post:
@@ -320,7 +320,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddGoodieBody'
+              $ref: "#/components/schemas/AddGoodieBody"
         required: true
       responses:
         200:
@@ -328,7 +328,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
 
   /admin/events/winners:
     post:
@@ -344,7 +344,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddWinnersBody'
+              $ref: "#/components/schemas/AddWinnersBody"
         required: true
       responses:
         200:
@@ -352,7 +352,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: "#/components/schemas/MessageResponse"
 
   /spec:
     get:

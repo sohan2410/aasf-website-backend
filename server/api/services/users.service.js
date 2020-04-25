@@ -52,6 +52,22 @@ class UsersService {
     }
   }
 
+  async changeProfilePicture(roll, dp) {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        roll,
+        {
+          dp,
+        },
+        { new: true, select: { password: 0 } }
+      );
+      if (!user) throw { status: 400, message: "User does not exist" };
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async getUserDetails(roll) {
     try {
       const user = await userModel.findById(roll, "-password");

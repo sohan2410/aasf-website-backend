@@ -5,6 +5,11 @@ if (process.env.NODE_ENV === "production") {
     defaultPassword: process.env.DEFAULT_PASSWORD,
     encryptionKey: process.env.ENCRYPTION_KEY,
     encryptionAlgorithm: process.env.ENCRYPTION_ALGORITHM,
+    xssOptions: {
+      whiteList: [],
+      stripIgnoreTag: [],
+      stripIgnoreTagBody: ["script"],
+    },
   };
 } else {
   module.exports = {
@@ -13,5 +18,10 @@ if (process.env.NODE_ENV === "production") {
     defaultPassword: process.env.DEFAULT_PASSWORD,
     encryptionKey: process.env.ENCRYPTION_KEY,
     encryptionAlgorithm: process.env.ENCRYPTION_ALGORITHM,
+    xssOptions: {
+      whiteList: [],
+      stripIgnoreTag: [],
+      stripIgnoreTagBody: ["script"],
+    },
   };
 }

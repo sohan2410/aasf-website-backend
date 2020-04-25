@@ -6,6 +6,7 @@ import isAuthenticated from "../../middlewares/isAuthenticated";
 export default express
   .Router()
   .post("/login", controller.login)
-  .post("/changepassword", isAuthenticated, controller.changePassword)
+  .put("/password", isAuthenticated, controller.changePassword)
+  .put("/dp", isAuthenticated, controller.changeProfilePicture)
   .get("/details", isAuthenticated, controller.getUserDetails)
   .get("/leaderboard", isAuthenticated, controller.getLeaderboard);
