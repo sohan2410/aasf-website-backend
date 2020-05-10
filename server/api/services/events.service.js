@@ -5,12 +5,15 @@ import QRCode from "qrcode";
 import l from "../../common/logger";
 import userModel from "../../models/user";
 import eventModel from "../../models/event";
-import attendanceModel from "../../models/attendance";
 
 import { encryptionKey, encryptionAlgorithm } from "../../common/config";
 
 class EventsService {
   constructor() {
+    /**
+     * Memoize the events for which attendance is being marked
+     * @param {Function} fetchEventData - The function which should be memoized
+     */
     this.eventMemoize = (fetchEventData) => {
       let events = {};
       return {
@@ -28,6 +31,10 @@ class EventsService {
       };
     };
 
+    /**
+     * Clear the attendance
+     * @param {String} id - Id of the event
+     */
     this.fetchEventData = this.eventMemoize(
       async (id) => await eventModel.findById(id)
     );
@@ -39,6 +46,10 @@ class EventsService {
     };
   }
 
+  /**
+   * Upload a list of events from the csv into the database
+   * @param {String} file - Name of the file uploaded
+   */
   async uploadEvents(file) {
     try {
       const events = await csv().fromFile(
@@ -50,6 +61,10 @@ class EventsService {
     }
   }
 
+  /**
+   * Add a single event
+   * @param {Object} event - Details of the event. Conforms to the event model
+   */
   async addEvent(event) {
     try {
       await eventModel.create(event);
@@ -58,6 +73,11 @@ class EventsService {
     }
   }
 
+  /**
+   * Edit the details of an event
+   * @param {String} id - Id of the event
+   * @param {Object} data - Details of the event. Conforms to the event model
+   */
   async editEventDetails(id, data) {
     try {
       const event = await eventModel.findByIdAndUpdate(id, data, {
@@ -69,6 +89,9 @@ class EventsService {
     }
   }
 
+  /**
+   * Fetch the list of events sorted according to start date
+   */
   async getEvents() {
     try {
       return await eventModel.find({}, "-qr -winners -importance", {
@@ -79,6 +102,10 @@ class EventsService {
     }
   }
 
+  /**
+   * Delete an event
+   * @param {String} id - Id of the event
+   */
   async deleteEvent(id) {
     try {
       await eventModel.findByIdAndDelete(id);
@@ -87,6 +114,11 @@ class EventsService {
     }
   }
 
+  /**
+   * Add goodie points to a student
+   * @param {String} roll - Roll number of the student
+   * @param {String} eventId - Id of the event
+   */
   async addGoodies(roll, eventId) {
     try {
       const eventData = await eventModel.findById(eventId);
@@ -101,6 +133,12 @@ class EventsService {
     }
   }
 
+  /**
+   * Add points to winners of an event
+   * @param {Array<String[]>} winners - A 2D Array of winners. 0th index contains the list of
+   *                                    roll numbers of students who stood 1st and so on.
+   * @param {String} eventId - Id of the event
+   */
   async addWinners(winners, eventId) {
     try {
       const eventData = await eventModel.findByIdAndUpdate(eventId, {
@@ -139,6 +177,12 @@ class EventsService {
     }
   }
 
+  /**
+   * Generate QR code for an event
+   * @param {String} id - Id of the event
+   * @param {Number} day - Day number of the event. Has to be less than equal to the total
+   *                       number of days allotted to the event
+   */
   async generateQRCode(id, day) {
     try {
       const event = await eventModel.findOneAndUpdate(
@@ -157,14 +201,19 @@ class EventsService {
       hash += encrypt.final("hex");
 
       return await QRCode.toDataURL(hash);
-      // return hash;
     } catch (err) {
       throw err;
     }
   }
 
+  /**
+   * Mark the attendance of a student for a particular event
+   * @param {String} roll - Roll number of the student
+   * @param {String} hash - Hash scanned from the QR Code
+   */
   async markAttendance(roll, hash) {
     try {
+      //Check if the student has already marked his attendance.
       if (this.attendances[roll] >= new Date().toISOString())
         throw {
           message: "You have already marked your attendance",
@@ -178,6 +227,7 @@ class EventsService {
       const data = JSON.parse(plain);
       if (!data._id || !data.day) throw { message: "Invalid QR", status: 400 };
 
+      //Fetch event details from memoizer
       const eventData = await this.fetchEventData.get(data._id);
 
       if (data.day > eventData.numberOfDays || data.day <= 0)
@@ -191,6 +241,7 @@ class EventsService {
         .toISOString()
         .split("T")[0];
 
+      //Validate event
       if (currentDate !== eventDate)
         throw { message: "Invalid QR", status: 400 };
 
@@ -198,19 +249,14 @@ class EventsService {
         new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
       ).toISOString();
 
-      // const attendance = attendanceModel.create({
-      //   _id: roll,
-      //   expireAt: new Date(
-      //     new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
-      //   ).toISOString(),
-      // });
-
+      //Update the student's score
       const update = {};
       update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
       const user = userModel.findByIdAndUpdate(roll, {
         $inc: update,
       });
 
+      //Increment the event's attendance
       const increment = {};
       increment[`attendance.${parseInt(data.day, 10) - 1}`] = 1;
       const event = eventModel.findByIdAndUpdate(data._id, {

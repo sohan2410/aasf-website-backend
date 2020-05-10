@@ -2,6 +2,15 @@ import EventsService from "../../../../services/events.service";
 import l from "../../../../../common/logger";
 
 export class Controller {
+  /**
+   * @api {post} /admin/events/upload - Upload a list of events
+   * @apiName Upload
+   * @apiGroup Admin/Events
+   *
+   * @apiParam {File} events - CSV file with a list of events containing 4 columns.
+   *                           name, startDate, numberOfDays, category
+   *                           (technical, oratory, managerial, miscellaneous), importance(Range: 1-3)
+   */
   async uploadEvents(req, res) {
     try {
       if (req.file) await EventsService.uploadEvents(req.file.filename);
@@ -14,6 +23,13 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {post} /admin/events - Add a single event
+   * @apiName Add
+   * @apiGroup Admin/Events
+   *
+   * @apiParam {Object} body - Details of the event. Conforms to the event model.
+   */
   async addEvent(req, res) {
     try {
       await EventsService.addEvent(req.body);
@@ -25,6 +41,13 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {post} /admin/events/:id - Update an event
+   * @apiName Edit
+   * @apiGroup Admin/Events
+   *
+   * @apiParam {Object} body - Updated details of the event. Conforms to the event model.
+   */
   async editEventDetails(req, res) {
     try {
       const event = await EventsService.editEventDetails(
@@ -39,6 +62,13 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {get} /admin/events - Get the list of events
+   * @apiName Get
+   * @apiGroup Admin/Events
+   *
+   * @apiParam {Object} body - Details of the event. Conforms to the event model.
+   */
   async getEvents(req, res) {
     try {
       const events = await EventsService.getEvents();
@@ -50,6 +80,11 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {post} /admin/events/:id - Delete an event
+   * @apiName Delete
+   * @apiGroup Admin/Events
+   */
   async deleteEvent(req, res) {
     try {
       await EventsService.deleteEvent(req.params.id);
@@ -61,6 +96,14 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {post} /admin/events/goodies - Add goodie points to a student
+   * @apiName Goodie
+   * @apiGroup Admin/Events
+   *
+   * @apiParam {String} roll - Roll number of the student
+   * @apiParam {String} eventId - Id of the event
+   */
   async addGoodies(req, res) {
     try {
       await EventsService.addGoodies(req.body.roll, req.body.eventId);
@@ -72,6 +115,15 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {post} /admin/events/winners - Add points to winners of an event
+   * @apiName Winners
+   * @apiGroup Admin/Events
+   *
+   * @apiParam {Array<String[]>} winners - A 2D Array of winners. 0th index contains the list of
+   *                                    roll numbers of students who stood 1st and so on.
+   * @apiParam {String} eventId - Id of the event
+   */
   async addWinners(req, res) {
     try {
       await EventsService.addWinners(req.body.winners, req.body.eventId);
@@ -83,6 +135,11 @@ export class Controller {
     }
   }
 
+  /**
+   * @api {get} /admin/events/qr/:id/:day - Generate QR Code for an event
+   * @apiName QR Code
+   * @apiGroup Admin/Events
+   */
   async generateQRCode(req, res) {
     try {
       const qr = await EventsService.generateQRCode(

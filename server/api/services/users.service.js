@@ -10,6 +10,10 @@ import { jwtSecret } from "../../common/config";
 const saltRounds = 10;
 
 class UsersService {
+  /**
+   * Upload a list of users from a csv to the database
+   * @param {String} file - Name of the file uploaded
+   */
   async uploadUsers(file) {
     try {
       const users = await csv().fromFile(
@@ -21,6 +25,11 @@ class UsersService {
     }
   }
 
+  /**
+   * Login
+   * @param {String} roll - Roll number of the student
+   * @param {String} password
+   */
   async login(roll, password) {
     try {
       const user = await userModel.findById(roll);
@@ -35,12 +44,21 @@ class UsersService {
     }
   }
 
+  /**
+   * Change password of a user
+   * @param {String} roll - Roll number of the student
+   * @param {String} currentPassword - User's current password
+   * @param {String} newPassword - User's new password
+   */
   async changePassword(roll, currentPassword, newPassword) {
     try {
       const user = await userModel.findById(roll);
       if (!user) throw { status: 400, message: "User not found" };
 
-      const verifyPassword = bcrypt.compareSync(currentPassword, user.password);
+      const verifyPassword = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
       if (!verifyPassword) throw { status: 401, message: "Invalid Password" };
 
       const hash = await bcrypt.hash(newPassword, saltRounds);
@@ -52,6 +70,11 @@ class UsersService {
     }
   }
 
+  /**
+   * Change Profile Picture of a user
+   * @param {String} roll - Roll number of the student
+   * @param {String} dp - Profile Picture of the student
+   */
   async changeProfilePicture(roll, dp) {
     try {
       const user = await userModel.findByIdAndUpdate(
@@ -68,6 +91,10 @@ class UsersService {
     }
   }
 
+  /**
+   * Get the details of a user
+   * @param {String} roll - Roll number of the student
+   */
   async getUserDetails(roll) {
     try {
       const user = await userModel.findById(roll, "-password");
@@ -79,6 +106,11 @@ class UsersService {
     }
   }
 
+  /**
+   * Edit the details of a user
+   * @param {String} roll - Roll number of the student
+   * @param {Object} data - Updated data of the student. Obeys the user model
+   */
   async editUserDetails(roll, data) {
     try {
       if (data.password) {
@@ -95,8 +127,16 @@ class UsersService {
     }
   }
 
+  /**
+   * Fetch the current leaderboard and highest possible points till date
+   */
   async getLeaderboard() {
     try {
+      //Aggregation stages:-
+      //1. Match only users, leave out admins.
+      //2. Add a totalScore field by adding the 3 category scores.
+      //3. Project only the roll number, name and totalScore of students.
+      //4. Sort the list in descending order of total score.
       const leaderboardPromise = userModel.aggregate([
         {
           $match: { role: "user" },
@@ -121,13 +161,22 @@ class UsersService {
           },
         },
       ]);
+
+      //To display the percentage score that a student has achieved,
+      //the highest possible score till date is needed.
+
+      //Find all past events in which either attendance was marked or it was a contest
+      //and winners were declared.
       const eventsPromise = eventModel.find({
         $or: [{ qr: true }, { winners: true }],
       });
+
       const [leaderboard, events] = await Promise.all([
         leaderboardPromise,
         eventsPromise,
       ]);
+
+      //Calculate the highest possible score.
       const totalScore = {
         technical: 0,
         managerial: 0,
@@ -138,12 +187,17 @@ class UsersService {
         if (event.winners)
           totalScore[event.category] += event.importance * 5 + 10;
       });
+
       return { leaderboard, totalScore };
     } catch (err) {
       throw err;
     }
   }
 
+  /**
+   * Generate the JWT Token for the user
+   * @param {String} roll - Roll number of the student
+   */
   generateToken(roll) {
     const today = new Date();
     const exp = new Date(today);
