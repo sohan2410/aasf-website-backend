@@ -31,6 +31,7 @@ export default express
   .put("/:id", controller.editEventDetails)
   .delete("/:id", controller.deleteEvent)
   .get("/qr/:id/:day", controller.generateQRCode)
+  .post("/clearattendance", controller.clearAttendances)
   .post("/upload", upload.single("events"), controller.uploadEvents)
   .post("/goodies", controller.addGoodies)
   .post("/winners", controller.addWinners);

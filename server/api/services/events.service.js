@@ -10,6 +10,35 @@ import attendanceModel from "../../models/attendance";
 import { encryptionKey, encryptionAlgorithm } from "../../common/config";
 
 class EventsService {
+  constructor() {
+    this.eventMemoize = (fetchEventData) => {
+      let events = {};
+      return {
+        get: async (id) => {
+          if (events[id]) return events[id];
+          events[id] = await fetchEventData(id);
+          return events[id];
+        },
+        clear: () => {
+          events = {};
+        },
+        clearOne: (id) => {
+          events[id] = null;
+        },
+      };
+    };
+
+    this.fetchEventData = this.eventMemoize(
+      async (id) => await eventModel.findById(id)
+    );
+
+    this.attendances = {};
+
+    this.clearAttendances = () => {
+      this.attendances = {};
+    };
+  }
+
   async uploadEvents(file) {
     try {
       const events = await csv().fromFile(
@@ -136,7 +165,7 @@ class EventsService {
 
   async markAttendance(roll, hash) {
     try {
-      if (await attendanceModel.findById(roll))
+      if (this.attendances[roll] >= new Date().toISOString())
         throw {
           message: "You have already marked your attendance",
           status: 400,
@@ -149,7 +178,8 @@ class EventsService {
       const data = JSON.parse(plain);
       if (!data._id || !data.day) throw { message: "Invalid QR", status: 400 };
 
-      const eventData = await eventModel.findById(data._id);
+      const eventData = await this.fetchEventData.get(data._id);
+
       if (data.day > eventData.numberOfDays || data.day <= 0)
         throw { message: "Invalid QR", status: 400 };
 
@@ -164,12 +194,16 @@ class EventsService {
       if (currentDate !== eventDate)
         throw { message: "Invalid QR", status: 400 };
 
-      const attendance = attendanceModel.create({
-        _id: roll,
-        expireAt: new Date(
-          new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
-        ).toISOString(),
-      });
+      this.attendances[roll] = new Date(
+        new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
+      ).toISOString();
+
+      // const attendance = attendanceModel.create({
+      //   _id: roll,
+      //   expireAt: new Date(
+      //     new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
+      //   ).toISOString(),
+      // });
 
       const update = {};
       update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
@@ -183,7 +217,7 @@ class EventsService {
         $inc: increment,
       });
 
-      await Promise.all([attendance, user, event]);
+      await Promise.all([user, event]);
     } catch (err) {
       throw err;
     }

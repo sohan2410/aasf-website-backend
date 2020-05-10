@@ -96,5 +96,10 @@ export class Controller {
       });
     }
   }
+
+  async clearAttendances(req, res) {
+    EventsService.clearAttendances();
+    res.status(200).send({ message: "Attendances cleared successfully" });
+  }
 }
 export default new Controller();
