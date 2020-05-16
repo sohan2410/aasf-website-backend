@@ -189,7 +189,9 @@ class UsersService {
         oratory: 0,
       };
       events.forEach((event) => {
-        if (event.qr) totalScore[event.category] += event.importance * 5 + 5;
+        if (event.qr)
+          totalScore[event.category] +=
+            (event.importance * 5 + 5) * event.numberOfDays;
         if (event.winners)
           totalScore[event.category] += event.importance * 5 + 10;
       });
