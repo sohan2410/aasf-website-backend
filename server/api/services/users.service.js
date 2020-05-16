@@ -21,6 +21,7 @@ class UsersService {
       );
       await userModel.insertMany(users);
     } catch (err) {
+      l.error("[UPLOAD USERS]", err);
       throw err;
     }
   }
@@ -40,6 +41,7 @@ class UsersService {
 
       return this.generateToken(user._id);
     } catch (err) {
+      l.error("[LOGIN]", err);
       throw err;
     }
   }
@@ -66,6 +68,7 @@ class UsersService {
         password: hash,
       });
     } catch (err) {
+      l.error("[CHANGE PASSWORD]", err);
       throw err;
     }
   }
@@ -87,6 +90,7 @@ class UsersService {
       if (!user) throw { status: 400, message: "User does not exist" };
       return user;
     } catch (err) {
+      l.error("[CHANGE PROFILE PICTURE]", err);
       throw err;
     }
   }
@@ -102,6 +106,7 @@ class UsersService {
 
       return user;
     } catch (err) {
+      l.error("[GET USER DETAILS]", err);
       throw err;
     }
   }
@@ -123,6 +128,7 @@ class UsersService {
       if (!user) throw { status: 400, message: "User not found" };
       return user;
     } catch (err) {
+      l.error("[EDIT USER DETAILS]", err);
       throw err;
     }
   }
@@ -190,6 +196,7 @@ class UsersService {
 
       return { leaderboard, totalScore };
     } catch (err) {
+      l.error("[GET LEADERBOARD]", err);
       throw err;
     }
   }
@@ -201,7 +208,7 @@ class UsersService {
   generateToken(roll) {
     const today = new Date();
     const exp = new Date(today);
-    exp.setDate(today.getDate() + 1000000);
+    exp.setDate(today.getDate() + 1000000); //Infinite Expiry!
 
     return jwt.sign(
       {

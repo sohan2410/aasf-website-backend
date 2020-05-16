@@ -57,6 +57,7 @@ class EventsService {
       );
       await eventModel.insertMany(events);
     } catch (err) {
+      l.error("[UPLOAD EVENTS]", err);
       throw err;
     }
   }
@@ -69,6 +70,7 @@ class EventsService {
     try {
       await eventModel.create(event);
     } catch (err) {
+      l.error("[ADD EVENT]", err);
       throw err;
     }
   }
@@ -85,6 +87,7 @@ class EventsService {
       });
       if (!event) throw { message: "Event not found", status: 400 };
     } catch (err) {
+      l.error("[EDIT EVENT]", err);
       throw err;
     }
   }
@@ -98,6 +101,7 @@ class EventsService {
         sort: { startDate: 1 },
       });
     } catch (err) {
+      l.error("[GET EVENTS]", err);
       throw err;
     }
   }
@@ -110,6 +114,7 @@ class EventsService {
     try {
       await eventModel.findByIdAndDelete(id);
     } catch (err) {
+      l.error("[DELETE EVENT]", err);
       throw err;
     }
   }
@@ -129,6 +134,7 @@ class EventsService {
       const user = await userModel.findByIdAndUpdate(roll, { $inc: update });
       if (!user) throw { message: "User not found", status: 400 };
     } catch (err) {
+      l.error("[ADD GOODIES]", err);
       throw err;
     }
   }
@@ -173,6 +179,7 @@ class EventsService {
 
       await Promise.all(promises);
     } catch (err) {
+      l.error("[ADD WINNERS]", err);
       throw err;
     }
   }
@@ -202,6 +209,7 @@ class EventsService {
 
       return await QRCode.toDataURL(hash);
     } catch (err) {
+      l.error("[GENERATE QR]", err);
       throw err;
     }
   }
@@ -265,6 +273,7 @@ class EventsService {
 
       await Promise.all([user, event]);
     } catch (err) {
+      l.error("[MARK ATTENDANCE]", err);
       throw err;
     }
   }
