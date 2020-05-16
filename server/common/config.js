@@ -11,3 +11,5 @@ export const xssOptions = {
   stripIgnoreTag: [],
   stripIgnoreTagBody: ["script"],
 };
+export const emailId = process.env.EMAIL_ID;
+export const emailPassword = process.env.EMAIL_PASSWORD;
