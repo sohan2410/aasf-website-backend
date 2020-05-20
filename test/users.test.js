@@ -9,11 +9,14 @@ const expect = chai.expect;
 describe("Users Authorization", () => {
   before(async () => {
     await mongo();
-    await userModel.deleteMany({});
     await userModel.create({
       _id: "2018BCS-000",
       name: "AASF",
     });
+  });
+
+  after(async () => {
+    await userModel.deleteMany({});
   });
 
   it("should login user when provided with right credentials", async () => {
@@ -52,11 +55,14 @@ describe("Users Authorization", () => {
 describe("User Operations(Change Password, Get Details, Leaderboard)", () => {
   before(async () => {
     await mongo();
-    await userModel.deleteMany({});
     await userModel.create({
       _id: "2018BCS-000",
       name: "AASF",
     });
+  });
+
+  after(async () => {
+    await userModel.deleteMany({});
   });
 
   let token;
