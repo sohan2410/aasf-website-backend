@@ -1,10 +1,21 @@
 import chai from "chai";
 import request from "supertest";
 import Server from "../server";
+import mongo from "../server/common/mongo";
+import userModel from "../server/models/user";
 
 const expect = chai.expect;
 
 describe("Users Authorization", () => {
+  before(async () => {
+    await mongo();
+    await userModel.deleteMany({});
+    await userModel.create({
+      _id: "2018BCS-000",
+      name: "AASF",
+    });
+  });
+
   it("should login user when provided with right credentials", async () => {
     const response = await request(Server)
       .post("/users/login")
@@ -37,6 +48,15 @@ describe("Users Authorization", () => {
 });
 
 describe("User Operations(Change Password, Get Details)", () => {
+  before(async () => {
+    await mongo();
+    await userModel.deleteMany({});
+    await userModel.create({
+      _id: "2018BCS-000",
+      name: "AASF",
+    });
+  });
+
   let token;
   before(async () => {
     const response = await request(Server)
@@ -44,16 +64,10 @@ describe("User Operations(Change Password, Get Details)", () => {
       .send({ roll: "2018BCS-000", password: "aasf_iiitm" });
     token = response.body.token;
   });
-  after(async () => {
-    await request(Server)
-      .post("/users/changepassword")
-      .set("Authorization", `bearer ${token}`)
-      .send({ currentPassword: "aasf@iiitm", newPassword: "aasf_iiitm" });
-  });
 
   it("changes password successfully for logged-in user", async () => {
     let response = await request(Server)
-      .post("/users/changepassword")
+      .put("/users/password")
       .set("Authorization", `bearer ${token}`)
       .send({ currentPassword: "aasf_iiitm", newPassword: "aasf@iiitm" });
     expect(response.body).to.be.an("object");
@@ -74,17 +88,17 @@ describe("User Operations(Change Password, Get Details)", () => {
 
   it("fails password change for unauthenticated user", async () => {
     let response = await request(Server)
-      .post("/users/changepassword")
-      .send({ currentPassword: "aasf_iiitm", newPassword: "aasf@iiitm" });
+      .put("/users/password")
+      .send({ currentPassword: "aasf@iiitm", newPassword: "aasf_iiitm" });
     expect(response.body).to.be.an("object");
     expect(response.status).to.be.equal(401);
     expect(response.body).to.have.property("message");
     expect(response.body.message).to.be.a("string");
 
     response = await request(Server)
-      .post("/users/changepassword")
+      .put("/users/password")
       .set("Authorization", `bearer dummy`)
-      .send({ currentPassword: "aasf_iiitm", newPassword: "aasf@iiitm" });
+      .send({ currentPassword: "aasf@iiitm", newPassword: "aasf_iiitm" });
     expect(response.body).to.be.an("object");
     expect(response.status).to.be.equal(401);
     expect(response.body).to.have.property("message");
