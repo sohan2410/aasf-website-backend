@@ -168,5 +168,10 @@ describe("User Operations(Change Password, Get Details, Leaderboard)", () => {
     expect(response.body.totalScore.oratory)
       .to.be.a("number")
       .to.equal(0);
+
+    expect(response.body.leaderboard).to.be.an("array");
+    expect(response.body.leaderboard[0])
+      .to.be.an("object")
+      .to.have.all.keys("_id", "name", "totalScore");
   });
 });
