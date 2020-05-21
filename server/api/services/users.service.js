@@ -41,7 +41,7 @@ class UsersService {
 
       return this.generateToken(user._id);
     } catch (err) {
-      l.error("[LOGIN]", err);
+      l.error("[LOGIN]", err, roll);
       throw err;
     }
   }
@@ -68,7 +68,7 @@ class UsersService {
         password: hash,
       });
     } catch (err) {
-      l.error("[CHANGE PASSWORD]", err);
+      l.error("[CHANGE PASSWORD]", err, roll);
       throw err;
     }
   }
@@ -90,7 +90,7 @@ class UsersService {
       if (!user) throw { status: 400, message: "User does not exist" };
       return user;
     } catch (err) {
-      l.error("[CHANGE PROFILE PICTURE]", err);
+      l.error("[CHANGE PROFILE PICTURE]", err, roll);
       throw err;
     }
   }
@@ -106,7 +106,7 @@ class UsersService {
 
       return user;
     } catch (err) {
-      l.error("[GET USER DETAILS]", err);
+      l.error("[GET USER DETAILS]", err, roll);
       throw err;
     }
   }
@@ -128,7 +128,7 @@ class UsersService {
       if (!user) throw { status: 400, message: "User not found" };
       return user;
     } catch (err) {
-      l.error("[EDIT USER DETAILS]", err);
+      l.error("[EDIT USER DETAILS]", err, roll);
       throw err;
     }
   }

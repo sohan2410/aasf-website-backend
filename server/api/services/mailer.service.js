@@ -25,7 +25,7 @@ class MailerService {
       };
       this.triggerMail(mailOptions);
     } catch (err) {
-      l.error("[SEND REPORT]", err);
+      l.error("[SEND REPORT]", err, eventName);
       throw err;
     }
   }
@@ -34,7 +34,6 @@ class MailerService {
     try {
       await transporter.sendMail(mailOptions);
     } catch (err) {
-      l.error("[SEND MAIL]", err);
       throw err;
     }
   }
