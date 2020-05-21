@@ -1,13 +1,6 @@
 import EventsService from "../../services/events.service";
 
 export class Controller {
-  /**
-   * @api {post} /events/attendance - Mark the attendance of a user for a particular event
-   * @apiName Mark Attendance
-   * @apiGroup Events
-   *
-   * @apiParam {String} hash - Hash scanned from the QR Code
-   */
   async markAttendance(req, res) {
     try {
       const { roll } = req.user;
@@ -20,11 +13,6 @@ export class Controller {
     }
   }
 
-  /**
-   * @api {get} /events - Get a list of events
-   * @apiName Get Events
-   * @apiGroup Events
-   */
   async getEvents(req, res) {
     try {
       const events = await EventsService.getEvents();
