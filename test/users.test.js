@@ -181,3 +181,44 @@ describe("User Operations(Change Password, Get Details, Leaderboard)", () => {
       .to.have.all.keys("_id", "name", "totalScore");
   });
 });
+
+describe("Admin Actions", () => {
+  let token;
+  before(async () => {
+    await mongo();
+    await userModel.create({
+      _id: "2018BCS-000",
+      name: "AASF",
+    });
+    await userModel.create({
+      _id: "2018BCS-031",
+      name: "Guna Shekar",
+      role: "admin",
+    });
+
+    const response = await request(Server)
+      .post("/users/login")
+      .send({ roll: "2018BCS-031", password: "aasf_iiitm" });
+    token = response.body.token;
+  });
+
+  after(async () => {
+    await userModel.deleteMany({});
+  });
+
+  it("allows admin to change user details", async () => {
+    let response = await request(Server)
+      .put("/admin/users/2018BCS-000")
+      .set("Authorization", `bearer ${token}`)
+      .send({ password: "aasf@iiitm" });
+
+    expect(response.body).to.be.an("object");
+    expect(response.status).to.equal(200);
+
+    response = await request(Server)
+      .post("/users/login")
+      .send({ roll: "2018BCS-000", password: "aasf@iiitm" });
+    expect(response.body).to.be.an("object");
+    expect(response.status).to.equal(200);
+  });
+});

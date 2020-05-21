@@ -600,8 +600,6 @@ components:
               type: string
             name:
               type: string
-            password:
-              type: string
             dp:
               type: string
             role:
