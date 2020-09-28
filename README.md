@@ -27,6 +27,8 @@ Newly built backend for AASF Website(revamped). Yet to be released.
 
 Get started developing...
 
+You will need a .env file in the root folder for the system to run successfully. An example for the .env file has been written in .env.example. Modify the environment variables as you need and required before starting.
+
 ```shell
 # install deps
 npm install
