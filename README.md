@@ -1,6 +1,27 @@
-# aasf-website-backend
+# AASF-Website-Backend
 
-Backend for AASF Website
+Newly built backend for AASF Website(revamped). Yet to be released.
+
+## Core Functions
+
+- Admin-Only Functions:
+
+  - Manage events.
+  - Add points for contest winners and goodie questions.
+  - Get QR Code to mark attendance for a particular event.
+  - Send report emails.
+  - Add and edit user details.
+
+- Events:
+
+  - Fetch events.
+  - Mark attendance for an event.
+
+- Users:
+  - Login.
+  - Fetch his/her details.
+  - Fetch Leaderboard.
+  - Change password and profile picture.
 
 ## Get Started
 
@@ -26,20 +47,16 @@ npm install
 ```
 
 ## Run It
-#### Run in *development* mode:
+
+#### Run in _development_ mode:
+
 Runs the application is development mode. Should not be used in production
 
 ```shell
 npm run dev
 ```
 
-or debug it
-
-```shell
-npm run dev:debug
-```
-
-#### Run in *production* mode:
+#### Run in _production_ mode:
 
 Compiles the application and starts it in production production mode.
 
@@ -56,19 +73,9 @@ Run the Mocha unit tests
 npm test
 ```
 
-or debug them
-
-```shell
-npm run test:debug
-```
-
 ## Try It
-* Open you're browser to [http://localhost:3000](http://localhost:3000)
-* Invoke the `/examples` endpoint 
-  ```shell
-  curl http://localhost:3000/api/v1/examples
-  ```
 
+- Open http://localhost:3000 on your browser to view the documentation and to invoke the APIs.
 
 ## Debug It
 
@@ -87,6 +94,7 @@ npm run test:debug
 #### Debug with VSCode
 
 Add these [contents](https://github.com/cdimascio/generator-express-no-stress/blob/next/assets/.vscode/launch.json) to your `.vscode/launch.json` file
+
 ## Lint It
 
 View prettier linter output
@@ -100,14 +108,3 @@ Fix all prettier linter errors
 ```
 npm run lint
 ```
-
-## Deploy It
-
-Deploy to CloudFoundry
-
-```shell
-cf push aasf-website-backend
-```
-
-
-   
