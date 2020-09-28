@@ -42,6 +42,7 @@ npm run dev
 ```
 
 - Once the server is up and running, you can open it in localhost:3000 to view the documentation. The first route in the documentation is the login route. Login using the id and password that you just set(roll parameter is the primary key you set in the database document). You must receive a token if everything goes well.
+- Create a folder named `users` under the public folder.
 - For uploading new users, you will have to use Postman since uploading a CSV file is not yet supported in Swagger UI. The route for uploading new users is /admin/users/upload. Make you sure pass the JWT token in the Authorization header as `bearer {token}`. Upload a [Sample CSV](https://docs.google.com/spreadsheets/d/1cCKq79B3jO3mMGYP6KVn42CKrc5BIbkDTCLX4RMi2JI/edit?usp=sharing) to add new users to the database. The file has to be uploaded in the form-data body with the field name as `users`.
 - You can add sample events in the similar manner. Refer to `routes.js` files in the server folder for the main routes and `routes.js` files in sub-folders to find sub-routes. [Sample CSV](https://docs.google.com/spreadsheets/d/1wGRoW9a7JXwEQ15D7IyqykiEiypAoN5SroYmrxGy7W0/edit?usp=sharing) for events. Modify the dates of the events as needed.
 - Once there are admin(s), users and events in the database, you're all set to roll. Go through the code and try to understand the code flow. On a high level, the flow goes like:- 
