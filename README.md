@@ -3,6 +3,8 @@
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/aasf-iiitm/aasf-website-backend"> <img alt="GitHub Hacktoberfest combined status" src="https://img.shields.io/github/hacktoberfest/2020/aasf-iiitm/aasf-website-backend"> ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square) [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 </br>
 
+**NOTE: THIS REPOSITORY IS OPEN ONLY TO THE STUDENTS OF IIITM GWALIOR, INDIA.**
+
 Newly built backend for AASF Website(revamped). Yet to be released.
 
 ## Core Functions
