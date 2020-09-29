@@ -32,7 +32,7 @@ class EventsService {
     };
 
     /**
-     * Clear the attendance
+     * Fetch event details
      * @param {String} id - Id of the event
      */
     this.fetchEventData = this.eventMemoize(
