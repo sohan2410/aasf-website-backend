@@ -34,25 +34,23 @@ export default class ExpressServer {
     return this;
   }
 
-  listen(port = process.env.PORT) {
+  async listen(port = process.env.PORT) {
     const welcome = (p) => () =>
       l.info(
         `up and running in ${process.env.NODE_ENV ||
           "development"} @: ${os.hostname()} on port: ${p}}`
       );
 
-    oas(app, this.routes)
-      .then(() => {
-        mongo().then(() => {
-          l.info(`Database loaded!`);
-          http.createServer(app).listen(port, welcome(port));
-        });
-      })
-      .catch((e) => {
-        l.error(e);
-        exit(1);
-      });
-
+    try {
+      await oas(app, this.routes);
+      await mongo();
+      l.info(`Database loaded!`);
+      http.createServer(app).listen(port, welcome(port));
+    } catch (err) {
+      l.error(err);
+      exit(1);
+    }
+    
     return app;
   }
 }
