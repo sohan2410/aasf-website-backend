@@ -7,7 +7,7 @@ export class Controller {
       await EventsService.markAttendance(roll, req.body.hash);
       res.status(200).send({ message: "Attendance Marked Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -16,7 +16,7 @@ export class Controller {
       const events = await EventsService.getEvents();
       res.status(200).send({ events, message: "Event fetched Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }

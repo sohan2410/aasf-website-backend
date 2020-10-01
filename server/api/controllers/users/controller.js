@@ -11,7 +11,7 @@ export class Controller {
       const token = await UsersService.login(roll, password);
       res.status(200).send({ token, message: "Successfully Logged in!" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -21,7 +21,7 @@ export class Controller {
       const user = await UsersService.getUserDetails(roll);
       res.status(200).send({ user, message: "Details successfully fetched" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -34,7 +34,7 @@ export class Controller {
         message: "Leaderboard successfully fetched",
       });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -51,7 +51,7 @@ export class Controller {
       await UsersService.changePassword(roll, currentPassword, newPassword);
       res.status(200).send({ message: "Password successfully changed!" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -72,7 +72,7 @@ export class Controller {
         message: "Profile Picture Successfully Changed",
       });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }

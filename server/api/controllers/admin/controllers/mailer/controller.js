@@ -6,7 +6,7 @@ export class Controller {
       await MailerService.sendReport(req.body.eventName, req.body.eventDetails);
       res.status(200).send({ message: "Report Successfully sent" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }

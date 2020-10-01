@@ -8,7 +8,7 @@ export class Controller {
       else throw { status: 400, message: "Please upload a valid file" };
       res.status(200).send({ message: "Events Uploaded Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -17,7 +17,7 @@ export class Controller {
       await EventsService.addEvent(req.body);
       res.status(200).send({ message: "Event Added Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -29,7 +29,7 @@ export class Controller {
       );
       res.status(200).send({ event, message: "Event Updated Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -38,7 +38,7 @@ export class Controller {
       const events = await EventsService.getEvents();
       res.status(200).send({ events, message: "Event fetched Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -47,7 +47,7 @@ export class Controller {
       await EventsService.deleteEvent(req.params.id);
       res.status(200).send({ message: "Event deleted Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -56,7 +56,7 @@ export class Controller {
       await EventsService.addGoodies(req.body.roll, req.body.eventId);
       res.status(200).send({ message: "Goodies Added Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -65,7 +65,7 @@ export class Controller {
       await EventsService.addWinners(req.body.winners, req.body.eventId);
       res.status(200).send({ message: "Winners Added Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -77,7 +77,7 @@ export class Controller {
       );
       res.status(200).send({ qr, message: "QR Code generated Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 

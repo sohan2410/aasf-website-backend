@@ -8,7 +8,7 @@ export class Controller {
       else throw { status: 400, message: "Please upload a valid file" };
       res.status(200).send({ message: "Users Uploaded Successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 
@@ -22,7 +22,7 @@ export class Controller {
         .status(200)
         .send({ user, message: "User details updated successfully" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }
