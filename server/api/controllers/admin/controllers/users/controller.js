@@ -6,7 +6,7 @@ export class Controller {
     try {
       if (req.file) await UsersService.uploadUsers(req.file.filename);
       else throw { status: 400, message: "Please upload a valid file" };
-      res.status(200).send({ message: "Users Uploaded Successfully" });
+      res.status(200).json({ message: "Users Uploaded Successfully" });
     } catch (err) {
       next(err);
     }
@@ -20,7 +20,7 @@ export class Controller {
       );
       res
         .status(200)
-        .send({ user, message: "User details updated successfully" });
+        .json({ user, message: "User details updated successfully" });
     } catch (err) {
       next(err);
     }

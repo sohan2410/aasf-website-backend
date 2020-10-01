@@ -9,7 +9,7 @@ export class Controller {
     try {
       const { roll, password } = req.body;
       const token = await UsersService.login(roll, password);
-      res.status(200).send({ token, message: "Successfully Logged in!" });
+      res.status(200).json({ token, message: "Successfully Logged in!" });
     } catch (err) {
       next(err);
     }
@@ -19,7 +19,7 @@ export class Controller {
     try {
       const { roll } = req.user;
       const user = await UsersService.getUserDetails(roll);
-      res.status(200).send({ user, message: "Details successfully fetched" });
+      res.status(200).json({ user, message: "Details successfully fetched" });
     } catch (err) {
       next(err);
     }
@@ -28,7 +28,7 @@ export class Controller {
   async getLeaderboard(req, res, next) {
     try {
       const { leaderboard, totalScore } = await UsersService.getLeaderboard();
-      res.status(200).send({
+      res.status(200).json({
         leaderboard,
         totalScore,
         message: "Leaderboard successfully fetched",
@@ -49,7 +49,7 @@ export class Controller {
         throw { status: 400, message: "Invalid Password" };
 
       await UsersService.changePassword(roll, currentPassword, newPassword);
-      res.status(200).send({ message: "Password successfully changed!" });
+      res.status(200).json({ message: "Password successfully changed!" });
     } catch (err) {
       next(err);
     }
@@ -67,7 +67,7 @@ export class Controller {
         roll,
         req.body.dp
       );
-      res.status(200).send({
+      res.status(200).json({
         user: updatedUser,
         message: "Profile Picture Successfully Changed",
       });
