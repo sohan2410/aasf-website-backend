@@ -5,31 +5,27 @@ import { xssOptions } from "../../../common/config";
 import validImage from "../../../utils/validImage";
 
 export class Controller {
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const { roll, password } = req.body;
       const token = await UsersService.login(roll, password);
       res.status(200).json({ token, message: "Successfully Logged in!" });
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .json({ message: err.message || "Some error has occurred" });
+      next(err);
     }
   }
 
-  async getUserDetails(req, res) {
+  async getUserDetails(req, res, next) {
     try {
       const { roll } = req.user;
       const user = await UsersService.getUserDetails(roll);
       res.status(200).json({ user, message: "Details successfully fetched" });
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .json({ message: err.message || "Some error has occurred" });
+      next(err);
     }
   }
 
-  async getLeaderboard(req, res) {
+  async getLeaderboard(req, res, next) {
     try {
       const { leaderboard, totalScore } = await UsersService.getLeaderboard();
       res.status(200).json({
@@ -38,13 +34,11 @@ export class Controller {
         message: "Leaderboard successfully fetched",
       });
     } catch (err) {
-      res.status(err.status || 500).json({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
-  async changePassword(req, res) {
+  async changePassword(req, res, next) {
     try {
       const { roll } = req.user;
       let { currentPassword, newPassword } = req.body;
@@ -57,13 +51,11 @@ export class Controller {
       await UsersService.changePassword(roll, currentPassword, newPassword);
       res.status(200).json({ message: "Password successfully changed!" });
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .json({ message: err.message || "Some error has occurred" });
+      next(err);
     }
   }
 
-  async changeProfilePicture(req, res) {
+  async changeProfilePicture(req, res, next) {
     try {
       const { roll } = req.user;
 
@@ -80,9 +72,7 @@ export class Controller {
         message: "Profile Picture Successfully Changed",
       });
     } catch (err) {
-      res.status(err.status || 500).json({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 }
