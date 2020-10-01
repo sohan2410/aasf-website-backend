@@ -9,11 +9,11 @@ export class Controller {
     try {
       const { roll, password } = req.body;
       const token = await UsersService.login(roll, password);
-      res.status(200).send({ token, message: "Successfully Logged in!" });
+      res.status(200).json({ token, message: "Successfully Logged in!" });
     } catch (err) {
       res
         .status(err.status || 500)
-        .send({ message: err.message || "Some error has occurred" });
+        .json({ message: err.message || "Some error has occurred" });
     }
   }
 
@@ -21,24 +21,24 @@ export class Controller {
     try {
       const { roll } = req.user;
       const user = await UsersService.getUserDetails(roll);
-      res.status(200).send({ user, message: "Details successfully fetched" });
+      res.status(200).json({ user, message: "Details successfully fetched" });
     } catch (err) {
       res
         .status(err.status || 500)
-        .send({ message: err.message || "Some error has occurred" });
+        .json({ message: err.message || "Some error has occurred" });
     }
   }
 
   async getLeaderboard(req, res) {
     try {
       const { leaderboard, totalScore } = await UsersService.getLeaderboard();
-      res.status(200).send({
+      res.status(200).json({
         leaderboard,
         totalScore,
         message: "Leaderboard successfully fetched",
       });
     } catch (err) {
-      res.status(err.status || 500).send({
+      res.status(err.status || 500).json({
         message: err.message || "Something went wrong, please try again.",
       });
     }
@@ -55,11 +55,11 @@ export class Controller {
         throw { status: 400, message: "Invalid Password" };
 
       await UsersService.changePassword(roll, currentPassword, newPassword);
-      res.status(200).send({ message: "Password successfully changed!" });
+      res.status(200).json({ message: "Password successfully changed!" });
     } catch (err) {
       res
         .status(err.status || 500)
-        .send({ message: err.message || "Some error has occurred" });
+        .json({ message: err.message || "Some error has occurred" });
     }
   }
 
@@ -75,12 +75,12 @@ export class Controller {
         roll,
         req.body.dp
       );
-      res.status(200).send({
+      res.status(200).json({
         user: updatedUser,
         message: "Profile Picture Successfully Changed",
       });
     } catch (err) {
-      res.status(err.status || 500).send({
+      res.status(err.status || 500).json({
         message: err.message || "Something went wrong, please try again.",
       });
     }
