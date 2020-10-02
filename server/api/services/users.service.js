@@ -1,11 +1,11 @@
-const csv = require("csvtojson");
-const bcrypt = require("bcrypt");
-import * as jwt from "jsonwebtoken";
+const csv = require('csvtojson');
+const bcrypt = require('bcrypt');
+import * as jwt from 'jsonwebtoken';
 
-import l from "../../common/logger";
-import userModel from "../../models/user";
-import eventModel from "../../models/event";
-import { jwtSecret } from "../../common/config";
+import l from '../../common/logger';
+import userModel from '../../models/user';
+import eventModel from '../../models/event';
+import { jwtSecret } from '../../common/config';
 
 const saltRounds = 10;
 
@@ -16,12 +16,20 @@ class UsersService {
    */
   async uploadUsers(file) {
     try {
-      const users = await csv().fromFile(
-        __dirname + `/../../../public/users/${file}`
-      );
+      const users = await csv().fromFile(__dirname + `/../../../public/users/${file}`);
+
+      for (let user of users) {
+        let roll = user['_id'];
+        let year = roll.substring(0, 4);
+        let batch = roll.substring(4, 7).toLowerCase();
+        let rno = roll.split('-')[1];
+
+        user['email'] = `${batch}_${year}${rno}@iiitm.ac.in`;
+      }
+
       await userModel.insertMany(users);
     } catch (err) {
-      l.error("[UPLOAD USERS]", err);
+      l.error('[UPLOAD USERS]', err);
       throw err;
     }
   }
@@ -34,14 +42,14 @@ class UsersService {
   async login(roll, password) {
     try {
       const user = await userModel.findById(roll);
-      if (!user) throw { status: 400, message: "User not found" };
+      if (!user) throw { status: 400, message: 'User not found' };
 
       const verifyPassword = await bcrypt.compare(password, user.password);
-      if (!verifyPassword) throw { status: 401, message: "Invalid Password" };
+      if (!verifyPassword) throw { status: 401, message: 'Invalid Password' };
 
       return this.generateToken(user._id);
     } catch (err) {
-      l.error("[LOGIN]", err, roll);
+      l.error('[LOGIN]', err, roll);
       throw err;
     }
   }
@@ -55,20 +63,17 @@ class UsersService {
   async changePassword(roll, currentPassword, newPassword) {
     try {
       const user = await userModel.findById(roll);
-      if (!user) throw { status: 400, message: "User not found" };
+      if (!user) throw { status: 400, message: 'User not found' };
 
-      const verifyPassword = await bcrypt.compare(
-        currentPassword,
-        user.password
-      );
-      if (!verifyPassword) throw { status: 401, message: "Invalid Password" };
+      const verifyPassword = await bcrypt.compare(currentPassword, user.password);
+      if (!verifyPassword) throw { status: 401, message: 'Invalid Password' };
 
       const hash = await bcrypt.hash(newPassword, saltRounds);
       await userModel.findByIdAndUpdate(roll, {
         password: hash,
       });
     } catch (err) {
-      l.error("[CHANGE PASSWORD]", err, roll);
+      l.error('[CHANGE PASSWORD]', err, roll);
       throw err;
     }
   }
@@ -87,10 +92,10 @@ class UsersService {
         },
         { new: true, select: { password: 0 } }
       );
-      if (!user) throw { status: 400, message: "User does not exist" };
+      if (!user) throw { status: 400, message: 'User does not exist' };
       return user;
     } catch (err) {
-      l.error("[CHANGE PROFILE PICTURE]", err, roll);
+      l.error('[CHANGE PROFILE PICTURE]', err, roll);
       throw err;
     }
   }
@@ -101,12 +106,12 @@ class UsersService {
    */
   async getUserDetails(roll) {
     try {
-      const user = await userModel.findById(roll, "-password");
-      if (!user) throw { status: 400, message: "User not found" };
+      const user = await userModel.findById(roll, '-password');
+      if (!user) throw { status: 400, message: 'User not found' };
 
       return user;
     } catch (err) {
-      l.error("[GET USER DETAILS]", err, roll);
+      l.error('[GET USER DETAILS]', err, roll);
       throw err;
     }
   }
@@ -125,10 +130,10 @@ class UsersService {
         new: true,
         select: { password: 0 },
       });
-      if (!user) throw { status: 400, message: "User not found" };
+      if (!user) throw { status: 400, message: 'User not found' };
       return user;
     } catch (err) {
-      l.error("[EDIT USER DETAILS]", err, roll);
+      l.error('[EDIT USER DETAILS]', err, roll);
       throw err;
     }
   }
@@ -145,12 +150,12 @@ class UsersService {
       //4. Sort the list in descending order of total score.
       const leaderboardPromise = userModel.aggregate([
         {
-          $match: { role: "user" },
+          $match: { role: 'user' },
         },
         {
           $addFields: {
             totalScore: {
-              $add: ["$score.technical", "$score.managerial", "$score.oratory"],
+              $add: ['$score.technical', '$score.managerial', '$score.oratory'],
             },
           },
         },
@@ -177,10 +182,7 @@ class UsersService {
         $or: [{ qr: true }, { winners: true }],
       });
 
-      const [leaderboard, events] = await Promise.all([
-        leaderboardPromise,
-        eventsPromise,
-      ]);
+      const [leaderboard, events] = await Promise.all([leaderboardPromise, eventsPromise]);
 
       //Calculate the highest possible score.
       const totalScore = {
@@ -188,17 +190,14 @@ class UsersService {
         managerial: 0,
         oratory: 0,
       };
-      events.forEach((event) => {
-        if (event.qr)
-          totalScore[event.category] +=
-            (event.importance * 5 + 5) * event.numberOfDays;
-        if (event.winners)
-          totalScore[event.category] += event.importance * 5 + 10;
+      events.forEach(event => {
+        if (event.qr) totalScore[event.category] += (event.importance * 5 + 5) * event.numberOfDays;
+        if (event.winners) totalScore[event.category] += event.importance * 5 + 10;
       });
 
       return { leaderboard, totalScore };
     } catch (err) {
-      l.error("[GET LEADERBOARD]", err);
+      l.error('[GET LEADERBOARD]', err);
       throw err;
     }
   }
