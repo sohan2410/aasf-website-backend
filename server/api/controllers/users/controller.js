@@ -25,7 +25,8 @@ export class Controller {
     }
   }
 
-  async getLeaderboard(req, res, next) {
+
+  async getLeaderboard(_, res, next) {
     try {
       const { leaderboard, totalScore } = await UsersService.getLeaderboard();
       res.status(200).json({

@@ -1,7 +1,7 @@
 import ExamplesService from '../../services/examples.service';
 
 export class Controller {
-  async all(req, res) {
+  async all(_, res) {
     const r = await ExamplesService.all();
     res.json(r);
   }

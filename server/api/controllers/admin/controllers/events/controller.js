@@ -32,8 +32,8 @@ export class Controller {
       next(err);
     }
   }
-
-  async getEvents(req, res, next) {
+  
+  async getEvents(_, res, next) {
     try {
       const events = await EventsService.getEvents();
       res.status(200).json({ events, message: "Event fetched Successfully" });
@@ -81,7 +81,7 @@ export class Controller {
     }
   }
 
-  async clearAttendances(req, res) {
+  async clearAttendances(_, res) {
     EventsService.clearAttendances();
     res.status(200).json({ message: "Attendances cleared successfully" });
   }

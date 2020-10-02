@@ -11,7 +11,8 @@ export class Controller {
     }
   }
 
-  async getEvents(req, res, next) {
+
+  async getEvents(_, res, next) {
     try {
       const events = await EventsService.getEvents();
       res.status(200).json({ events, message: "Event fetched Successfully" });
