@@ -2,104 +2,88 @@ import EventsService from "../../../../services/events.service";
 import l from "../../../../../common/logger";
 
 export class Controller {
-  async uploadEvents(req, res) {
+  async uploadEvents(req, res, next) {
     try {
       if (req.file) await EventsService.uploadEvents(req.file.filename);
       else throw { status: 400, message: "Please upload a valid file" };
-      res.status(200).send({ message: "Events Uploaded Successfully" });
+      res.status(200).json({ message: "Events Uploaded Successfully" });
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .send({ message: err.message || "Some error has occurred" });
+      next(err);
     }
   }
 
-  async addEvent(req, res) {
+  async addEvent(req, res, next) {
     try {
       await EventsService.addEvent(req.body);
-      res.status(200).send({ message: "Event Added Successfully" });
+      res.status(200).json({ message: "Event Added Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
-  async editEventDetails(req, res) {
+  async editEventDetails(req, res, next) {
     try {
       const event = await EventsService.editEventDetails(
         req.params.id,
         req.body
       );
-      res.status(200).send({ event, message: "Event Updated Successfully" });
+      res.status(200).json({ event, message: "Event Updated Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
-
-  async getEvents(_, res) {
+  
+  async getEvents(_, res, next) {
     try {
       const events = await EventsService.getEvents();
-      res.status(200).send({ events, message: "Event fetched Successfully" });
+      res.status(200).json({ events, message: "Event fetched Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
-  async deleteEvent(req, res) {
+  async deleteEvent(req, res, next) {
     try {
       await EventsService.deleteEvent(req.params.id);
-      res.status(200).send({ message: "Event deleted Successfully" });
+      res.status(200).json({ message: "Event deleted Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
-  async addGoodies(req, res) {
+  async addGoodies(req, res, next) {
     try {
       await EventsService.addGoodies(req.body.roll, req.body.eventId);
-      res.status(200).send({ message: "Goodies Added Successfully" });
+      res.status(200).json({ message: "Goodies Added Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
-  async addWinners(req, res) {
+  async addWinners(req, res, next) {
     try {
       await EventsService.addWinners(req.body.winners, req.body.eventId);
-      res.status(200).send({ message: "Winners Added Successfully" });
+      res.status(200).json({ message: "Winners Added Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
-  async generateQRCode(req, res) {
+  async generateQRCode(req, res, next) {
     try {
       const qr = await EventsService.generateQRCode(
         req.params.id,
         req.params.day
       );
-      res.status(200).send({ qr, message: "QR Code generated Successfully" });
+      res.status(200).json({ qr, message: "QR Code generated Successfully" });
     } catch (err) {
-      res.status(err.status || 500).send({
-        message: err.message || "Something went wrong, please try again.",
-      });
+      next(err);
     }
   }
 
   async clearAttendances(_, res) {
     EventsService.clearAttendances();
-    res.status(200).send({ message: "Attendances cleared successfully" });
+    res.status(200).json({ message: "Attendances cleared successfully" });
   }
 }
 export default new Controller();
