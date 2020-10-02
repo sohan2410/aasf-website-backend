@@ -2,17 +2,17 @@ import * as express from "express";
 const multer = require("multer");
 import controller from "./controller";
 
-const fileFilter = (req, file, callback) => {
+const fileFilter = (_, file, callback) => {
   if (!file.originalname.match(/\.(csv)$/))
     return callback(new Error("Please upload a valid .csv file"), false);
   else return callback(null, true);
 };
 
 const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
+  destination: (_, __, callback) => {
     callback(null, __dirname + `/../../../../../../public/users/`);
   },
-  filename: (req, file, callback) => {
+  filename: (_, file, callback) => {
     callback(null, file.originalname);
   },
 });

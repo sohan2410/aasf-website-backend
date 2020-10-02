@@ -29,7 +29,7 @@ export class Controller {
     }
   }
 
-  async getLeaderboard(req, res) {
+  async getLeaderboard(_, res) {
     try {
       const { leaderboard, totalScore } = await UsersService.getLeaderboard();
       res.status(200).send({

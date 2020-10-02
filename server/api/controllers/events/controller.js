@@ -13,7 +13,7 @@ export class Controller {
     }
   }
 
-  async getEvents(req, res) {
+  async getEvents(_, res) {
     try {
       const events = await EventsService.getEvents();
       res.status(200).send({ events, message: "Event fetched Successfully" });
