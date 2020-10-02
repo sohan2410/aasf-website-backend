@@ -35,6 +35,13 @@ export default class ExpressServer {
   }
 
   async load(port) {
+
+      const welcome = (p) => () =>
+        l.info(
+          `up and running in ${process.env.NODE_ENV ||
+            "development"} @: ${os.hostname()} on port: ${p}}`
+        );
+
       await oas(app, this.routes);
       await mongo();
 
