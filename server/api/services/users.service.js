@@ -141,7 +141,7 @@ class UsersService {
   /**
    * Fetch the current leaderboard and highest possible points till date
    */
-  async getLeaderboard() {
+  async getLeaderboard(cursor) {
     try {
       //Aggregation stages:-
       //1. Match only users, leave out admins.
@@ -169,7 +169,14 @@ class UsersService {
         {
           $sort: {
             totalScore: -1,
+            _id: 1,
           },
+        },
+        {
+          $skip: cursor,
+        },
+        {
+          $limit: 20,
         },
       ]);
 

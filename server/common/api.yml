@@ -130,6 +130,13 @@ paths:
       description: Get leaderboard
       security:
         - Bearer: []
+      parameters:
+        - in: query
+          name: cursor
+          schema:
+            type: string
+          required: true
+          description: number of elements to skip
       responses:
         200:
           description: Return leaderboard
