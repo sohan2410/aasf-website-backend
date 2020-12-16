@@ -109,7 +109,9 @@ class UsersService {
       const user = await userModel.findById(roll, '-password');
       if (!user) throw { status: 400, message: 'User not found' };
 
-      return user;
+      const rank = await userModel.find({ totalScore: { $gt: user.totalScore } }).countDocuments();
+
+      return { user, rank: rank + 1 };
     } catch (err) {
       l.error('[GET USER DETAILS]', err, roll);
       throw err;

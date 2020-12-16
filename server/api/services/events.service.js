@@ -1,12 +1,12 @@
-const csv = require("csvtojson");
-const crypto = require("crypto");
-import QRCode from "qrcode";
+const csv = require('csvtojson');
+const crypto = require('crypto');
+import QRCode from 'qrcode';
 
-import l from "../../common/logger";
-import userModel from "../../models/user";
-import eventModel from "../../models/event";
+import l from '../../common/logger';
+import userModel from '../../models/user';
+import eventModel from '../../models/event';
 
-import { encryptionKey, encryptionAlgorithm } from "../../common/config";
+import { encryptionKey, encryptionAlgorithm } from '../../common/config';
 
 class EventsService {
   constructor() {
@@ -14,10 +14,10 @@ class EventsService {
      * Memoize the events for which attendance is being marked
      * @param {Function} fetchEventData - The function which should be memoized
      */
-    this.eventMemoize = (fetchEventData) => {
+    this.eventMemoize = fetchEventData => {
       let events = {};
       return {
-        get: async (id) => {
+        get: async id => {
           if (events[id]) return events[id];
           events[id] = await fetchEventData(id);
           return events[id];
@@ -25,7 +25,7 @@ class EventsService {
         clear: () => {
           events = {};
         },
-        clearOne: (id) => {
+        clearOne: id => {
           events[id] = null;
         },
       };
@@ -35,9 +35,7 @@ class EventsService {
      * Fetch event details
      * @param {String} id - Id of the event
      */
-    this.fetchEventData = this.eventMemoize(
-      async (id) => await eventModel.findById(id)
-    );
+    this.fetchEventData = this.eventMemoize(async id => await eventModel.findById(id));
 
     this.attendances = {};
 
@@ -52,12 +50,10 @@ class EventsService {
    */
   async uploadEvents(file) {
     try {
-      const events = await csv().fromFile(
-        __dirname + `/../../../public/events/${file}`
-      );
+      const events = await csv().fromFile(__dirname + `/../../../public/events/${file}`);
       await eventModel.insertMany(events);
     } catch (err) {
-      l.error("[UPLOAD EVENTS]", err);
+      l.error('[UPLOAD EVENTS]', err);
       throw err;
     }
   }
@@ -70,7 +66,7 @@ class EventsService {
     try {
       await eventModel.create(event);
     } catch (err) {
-      l.error("[ADD EVENT]", err);
+      l.error('[ADD EVENT]', err);
       throw err;
     }
   }
@@ -85,9 +81,9 @@ class EventsService {
       const event = await eventModel.findByIdAndUpdate(id, data, {
         new: true,
       });
-      if (!event) throw { message: "Event not found", status: 400 };
+      if (!event) throw { message: 'Event not found', status: 400 };
     } catch (err) {
-      l.error("[EDIT EVENT]", err, id, data);
+      l.error('[EDIT EVENT]', err, id, data);
       throw err;
     }
   }
@@ -97,11 +93,11 @@ class EventsService {
    */
   async getEvents() {
     try {
-      return await eventModel.find({}, "-qr -winners -importance", {
+      return await eventModel.find({}, '-qr -winners -importance', {
         sort: { startDate: 1 },
       });
     } catch (err) {
-      l.error("[GET EVENTS]", err);
+      l.error('[GET EVENTS]', err);
       throw err;
     }
   }
@@ -114,7 +110,7 @@ class EventsService {
     try {
       await eventModel.findByIdAndDelete(id);
     } catch (err) {
-      l.error("[DELETE EVENT]", err, id);
+      l.error('[DELETE EVENT]', err, id);
       throw err;
     }
   }
@@ -127,14 +123,15 @@ class EventsService {
   async addGoodies(roll, eventId) {
     try {
       const eventData = await eventModel.findById(eventId);
-      if (!eventData) throw { message: "Event not found", status: 400 };
+      if (!eventData) throw { message: 'Event not found', status: 400 };
 
       const update = {};
       update[`score.${eventData.category}`] = eventData.importance * 5;
+      update['totalScore'] = eventData.importance * 5;
       const user = await userModel.findByIdAndUpdate(roll, { $inc: update });
-      if (!user) throw { message: "User not found", status: 400 };
+      if (!user) throw { message: 'User not found', status: 400 };
     } catch (err) {
-      l.error("[ADD GOODIES]", err, roll, eventId);
+      l.error('[ADD GOODIES]', err, roll, eventId);
       throw err;
     }
   }
@@ -150,21 +147,19 @@ class EventsService {
       const eventData = await eventModel.findByIdAndUpdate(eventId, {
         winners: true,
       });
-      if (!eventData) throw { message: "Event not found", status: 400 };
+      if (!eventData) throw { message: 'Event not found', status: 400 };
 
       const promises = [];
       const points = {};
 
       winners.forEach((winner, index) => {
-        points[`score.${eventData.category}`] =
-          eventData.importance * 5 + (2 - index) * 5;
+        points[`score.${eventData.category}`] = eventData.importance * 5 + (2 - index) * 5;
+        points['totalScore'] = eventData.importance * 5 + (2 - index) * 5;
 
         const achievement = {};
-        if (index === 0) achievement["achievements.first"] = eventData.name;
-        else if (index === 1)
-          achievement["achievements.second"] = eventData.name;
-        else if (index === 2)
-          achievement["achievements.third"] = eventData.name;
+        if (index === 0) achievement['achievements.first'] = eventData.name;
+        else if (index === 1) achievement['achievements.second'] = eventData.name;
+        else if (index === 2) achievement['achievements.third'] = eventData.name;
 
         promises.push(
           userModel.updateMany(
@@ -179,7 +174,7 @@ class EventsService {
 
       await Promise.all(promises);
     } catch (err) {
-      l.error("[ADD WINNERS]", err, winners, eventId);
+      l.error('[ADD WINNERS]', err, winners, eventId);
       throw err;
     }
   }
@@ -196,20 +191,15 @@ class EventsService {
         { _id: id, numberOfDays: { $gte: day } },
         { qr: true }
       );
-      if (!event)
-        throw { message: "Event not found or Invalid Day Number", status: 400 };
+      if (!event) throw { message: 'Event not found or Invalid Day Number', status: 400 };
 
       const encrypt = crypto.createCipher(encryptionAlgorithm, encryptionKey);
-      let hash = encrypt.update(
-        JSON.stringify({ _id: event._id, day }),
-        "utf8",
-        "hex"
-      );
-      hash += encrypt.final("hex");
+      let hash = encrypt.update(JSON.stringify({ _id: event._id, day }), 'utf8', 'hex');
+      hash += encrypt.final('hex');
 
       return await QRCode.toDataURL(hash);
     } catch (err) {
-      l.error("[GENERATE QR]", err, id, day);
+      l.error('[GENERATE QR]', err, id, day);
       throw err;
     }
   }
@@ -224,34 +214,31 @@ class EventsService {
       //Check if the student has already marked his attendance.
       if (this.attendances[roll] >= new Date().toISOString())
         throw {
-          message: "You have already marked your attendance",
+          message: 'You have already marked your attendance',
           status: 400,
         };
 
       const decrypt = crypto.createDecipher(encryptionAlgorithm, encryptionKey);
-      let plain = decrypt.update(hash, "hex", "utf8");
-      plain += decrypt.final("utf8");
+      let plain = decrypt.update(hash, 'hex', 'utf8');
+      plain += decrypt.final('utf8');
 
       const data = JSON.parse(plain);
-      if (!data._id || !data.day) throw { message: "Invalid QR", status: 400 };
+      if (!data._id || !data.day) throw { message: 'Invalid QR', status: 400 };
 
       //Fetch event details from memoizer
       const eventData = await this.fetchEventData.get(data._id);
 
       if (data.day > eventData.numberOfDays || data.day <= 0)
-        throw { message: "Invalid QR", status: 400 };
+        throw { message: 'Invalid QR', status: 400 };
 
       let eventDate = new Date(eventData.startDate);
       eventDate.setDate(eventDate.getDate() + parseInt(data.day, 10) - 1);
-      eventDate = eventDate.toISOString().split("T")[0];
+      eventDate = eventDate.toISOString().split('T')[0];
 
-      const currentDate = new Date(new Date().getTime() + 330 * 60000)
-        .toISOString()
-        .split("T")[0];
+      const currentDate = new Date(new Date().getTime() + 330 * 60000).toISOString().split('T')[0];
 
       //Validate event
-      if (currentDate !== eventDate)
-        throw { message: "Invalid QR", status: 400 };
+      if (currentDate !== eventDate) throw { message: 'Invalid QR', status: 400 };
 
       this.attendances[roll] = new Date(
         new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
@@ -260,6 +247,7 @@ class EventsService {
       //Update the student's score
       const update = {};
       update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
+      update['totalScore'] = eventData.importance * 5 + 5;
       const user = userModel.findByIdAndUpdate(roll, {
         $inc: update,
       });
@@ -273,7 +261,7 @@ class EventsService {
 
       await Promise.all([user, event]);
     } catch (err) {
-      l.error("[MARK ATTENDANCE]", err, roll, hash);
+      l.error('[MARK ATTENDANCE]', err, roll, hash);
       throw err;
     }
   }

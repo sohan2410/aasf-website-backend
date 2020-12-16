@@ -459,6 +459,9 @@ components:
         message:
           type: string
           example: Details fetched successfully
+        rank:
+          type: number
+          example: 1
         user:
           type: object
           properties:
