@@ -211,8 +211,9 @@ class EventsService {
    */
   async markAttendance(roll, hash) {
     try {
+      const currentDate = new Date(new Date().getTime() + 330 * 60000).toISOString().split('T')[0];
       //Check if the student has already marked his attendance.
-      if (this.attendances[roll] >= new Date().toISOString())
+      if (this.attendances[roll] >= currentDate)
         throw {
           message: 'You have already marked your attendance',
           status: 400,
@@ -236,14 +237,10 @@ class EventsService {
       eventDate.setDate(eventDate.getDate() + parseInt(data.day, 10) - 1);
       eventDate = eventDate.toISOString().split('T')[0];
 
-      const currentDate = new Date(new Date().getTime() + 330 * 60000).toISOString().split('T')[0];
-
       //Validate event
       if (currentDate !== eventDate) throw { message: 'Invalid QR', status: 400, inApp: true };
 
-      this.attendances[roll] = new Date(
-        new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
-      ).toISOString();
+      this.attendances[roll] = currentDate;
 
       //Update the student's score
       const update = {};
