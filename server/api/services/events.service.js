@@ -216,6 +216,7 @@ class EventsService {
         throw {
           message: 'You have already marked your attendance',
           status: 400,
+          inApp: true,
         };
 
       const decrypt = crypto.createDecipher(encryptionAlgorithm, encryptionKey);
@@ -223,13 +224,13 @@ class EventsService {
       plain += decrypt.final('utf8');
 
       const data = JSON.parse(plain);
-      if (!data._id || !data.day) throw { message: 'Invalid QR', status: 400 };
+      if (!data._id || !data.day) throw { message: 'Invalid QR', status: 400, inApp: true };
 
       //Fetch event details from memoizer
       const eventData = await this.fetchEventData.get(data._id);
 
       if (data.day > eventData.numberOfDays || data.day <= 0)
-        throw { message: 'Invalid QR', status: 400 };
+        throw { message: 'Invalid QR', status: 400, inApp: true };
 
       let eventDate = new Date(eventData.startDate);
       eventDate.setDate(eventDate.getDate() + parseInt(data.day, 10) - 1);
@@ -238,7 +239,7 @@ class EventsService {
       const currentDate = new Date(new Date().getTime() + 330 * 60000).toISOString().split('T')[0];
 
       //Validate event
-      if (currentDate !== eventDate) throw { message: 'Invalid QR', status: 400 };
+      if (currentDate !== eventDate) throw { message: 'Invalid QR', status: 400, inApp: true };
 
       this.attendances[roll] = new Date(
         new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000
@@ -262,7 +263,9 @@ class EventsService {
       await Promise.all([user, event]);
     } catch (err) {
       l.error('[MARK ATTENDANCE]', err, roll, hash);
-      throw err;
+      // throw err;
+      if (err.inApp) throw err;
+      else throw { message: 'Invalid QR', status: 400 };
     }
   }
 }
