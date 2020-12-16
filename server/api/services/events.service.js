@@ -263,7 +263,6 @@ class EventsService {
       await Promise.all([user, event]);
     } catch (err) {
       l.error('[MARK ATTENDANCE]', err, roll, hash);
-      // throw err;
       if (err.inApp) throw err;
       else throw { message: 'Invalid QR', status: 400 };
     }
