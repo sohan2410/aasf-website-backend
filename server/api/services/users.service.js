@@ -148,37 +148,11 @@ class UsersService {
       //2. Add a totalScore field by adding the 3 category scores.
       //3. Project only the roll number, name and totalScore of students.
       //4. Sort the list in descending order of total score.
-      const leaderboardPromise = userModel.aggregate([
-        {
-          $match: { role: 'user' },
-        },
-        {
-          $addFields: {
-            totalScore: {
-              $add: ['$score.technical', '$score.managerial', '$score.oratory'],
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            name: 1,
-            totalScore: 1,
-          },
-        },
-        {
-          $sort: {
-            totalScore: -1,
-            _id: 1,
-          },
-        },
-        {
-          $skip: cursor,
-        },
-        {
-          $limit: 20,
-        },
-      ]);
+      const leaderboardPromise = userModel
+        .find({ role: 'user' }, '_id name totalScore dp')
+        .sort('-totalScore _id')
+        .skip(cursor)
+        .limit(20);
 
       //To display the percentage score that a student has achieved,
       //the highest possible score till date is needed.

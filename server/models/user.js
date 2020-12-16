@@ -24,6 +24,10 @@ const User = new mongoose.Schema({
   dp: {
     type: String,
   },
+  totalScore: {
+    type: Number,
+    default: 0,
+  },
   //Scores in different categories
   score: {
     technical: {
