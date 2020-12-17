@@ -205,6 +205,56 @@ class EventsService {
   }
 
   /**
+   * Upload Attendance via csv file
+   * @param {string} file - name of the file in which attendance has been recorded
+   * @param {string} eventId - Event ID
+   * @param {number} day - Day number of the event
+   */
+  async uploadAttendance(file, eventId, day) {
+    try {
+      const attendance = await csv().fromFile(__dirname + `/../../../public/events/${file}`);
+      console.log(attendance);
+      const eventData = await this.fetchEventData.get(eventId);
+      let eventDate = new Date(eventData.startDate);
+      eventDate.setDate(eventDate.getDate() + parseInt(day, 10) - 1);
+      eventDate = eventDate.toISOString().split('T')[0];
+
+      const validRollNumbers = attendance.filter(student => {
+        return !this.attendances[student.roll] || this.attendances[student.roll] < eventDate;
+      });
+
+      validRollNumbers.forEach(student => {
+        this.attendances[student.roll] = eventDate;
+      });
+
+      const rollNumbers = validRollNumbers.map(student => student.roll);
+
+      const update = {};
+      update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
+      update['totalScore'] = eventData.importance * 5 + 5;
+
+      //Update users' scores
+      const user = userModel.updateMany(
+        { _id: { $in: rollNumbers } },
+        {
+          $inc: update,
+        }
+      );
+
+      //Increment the event's attendance
+      const increment = {};
+      increment[`attendance.${parseInt(day, 10) - 1}`] = rollNumbers.length;
+      const event = eventModel.findByIdAndUpdate(eventId, {
+        $inc: increment,
+      });
+
+      await Promise.all([user, event]);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
    * Mark the attendance of a student for a particular event
    * @param {String} roll - Roll number of the student
    * @param {String} hash - Hash scanned from the QR Code
