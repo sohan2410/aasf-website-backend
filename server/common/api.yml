@@ -86,7 +86,7 @@ paths:
         - Users
       servers:
         - url: /
-      description: Change user's password
+      description: Change user's profile picture
       security:
         - Bearer: []
       requestBody:
@@ -103,6 +103,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDetailsResponse'
+
+  /users/fcmToken:
+    put:
+      tags:
+        - Users
+      servers:
+        - url: /
+      description: Change user's FCM Token
+      security:
+        - Bearer: []
+      requestBody:
+        description: FCM Token
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeFCMBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
 
   /users/details:
     get:
@@ -214,6 +238,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EditUserResponse'
+
+  /admin/notifications:
+    post:
+      tags:
+        - Admin
+      servers:
+        - url: /
+      description: Send push notifications to users
+      security:
+        - Bearer: []
+      requestBody:
+        description: Notification Details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationBody'
+        required: true
+      responses:
+        200:
+          description: Return success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
 
   /admin/events:
     get:
@@ -453,6 +501,15 @@ components:
           type: string
           example: yourNewPassword
 
+    ChangeFCMBody:
+      type: object
+      required:
+        - fcmToken
+      properties:
+        fcmToken:
+          type: string
+          example: longFCMTokenString
+
     UserDetailsResponse:
       type: object
       properties:
@@ -638,6 +695,20 @@ components:
                   type: array
                   items:
                     type: string
+
+    NotificationBody:
+      type: object
+      required:
+        - title
+        - body
+        - imageUrl
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        imageUrl:
+          type: string
 
     AddEventBody:
       type: object

@@ -72,5 +72,17 @@ export class Controller {
       next(err);
     }
   }
+
+  async changeFcmToken(req, res, next) {
+    try {
+      req.body.fcmToken = xss(req.body.fcmToken, xssOptions);
+      if (!req.body.fcmToken) throw { status: 400, message: 'Invalid FCM Token!' };
+
+      await UsersService.changeFcmToken(req.user.roll, req.body.fcmToken);
+      res.status(200).json({ message: 'Successfully updated FCM Token' });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 export default new Controller();

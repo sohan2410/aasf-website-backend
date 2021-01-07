@@ -5,3 +5,4 @@ dist
 mongodb
 public/users
 public/events
+firebase.json

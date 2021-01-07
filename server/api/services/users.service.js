@@ -101,8 +101,24 @@ class UsersService {
   }
 
   /**
+   * Change FCM token for a user
+   * @param {string} roll - Roll number of the student
+   * @param {string} fcmToken - Firebase Cloud Messaging Token
+   */
+  async changeFcmToken(roll, fcmToken) {
+    try {
+      const user = await userModel.findByIdAndUpdate(roll, { fcmToken });
+      if (!user) throw { status: 400, message: 'User does not exist' };
+      return user;
+    } catch {
+      l.error('[CHANGE FCM Token]', err, roll);
+      throw err;
+    }
+  }
+
+  /**
    * Get the details of a user
-   * @param {String} roll - Roll number of the student
+   * @param {string} roll - Roll number of the student
    */
   async getUserDetails(roll) {
     try {

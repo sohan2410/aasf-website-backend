@@ -20,7 +20,11 @@ const User = new mongoose.Schema({
     type: String,
     default: defaultPassword,
   },
-  //Base-64 encoded display picture
+  //Firebase Cloud Messaging Token for push notifications
+  fcmToken: {
+    type: String,
+  },
+  //Base-64 encoded display picture or link to image on CDN
   dp: {
     type: String,
   },
