@@ -31,6 +31,7 @@ const upload = multer({
 export default express
   .Router()
   .post('/login', controller.login)
+  .post('/suggestions', isAuthenticated, controller.sendSuggestion)
   .put('/password', isAuthenticated, controller.changePassword)
   .put('/dp', isAuthenticated, upload.single('dp'), controller.changeProfilePicture)
   .put('/fcmToken', isAuthenticated, controller.changeFcmToken)

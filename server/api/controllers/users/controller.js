@@ -1,8 +1,8 @@
 import UsersService from '../../services/users.service';
+import MailerService from '../../services/mailer.service';
 import xss from 'xss';
 
 import { xssOptions } from '../../../common/config';
-import validImage from '../../../utils/validImage';
 
 export class Controller {
   async login(req, res, next) {
@@ -78,6 +78,17 @@ export class Controller {
 
       await UsersService.changeFcmToken(req.user.roll, req.body.fcmToken);
       res.status(200).json({ message: 'Successfully updated FCM Token' });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async sendSuggestion(req, res, next) {
+    try {
+      const { suggestion, anonymous } = req.body;
+
+      await MailerService.sendSuggestion(suggestion, anonymous ? null : req.user.roll);
+      res.status(200).json({ message: 'Successfully sent suggestion' });
     } catch (err) {
       next(err);
     }

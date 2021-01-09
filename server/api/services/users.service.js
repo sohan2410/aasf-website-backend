@@ -159,15 +159,11 @@ class UsersService {
   }
 
   /**
-   * Fetch the current leaderboard and highest possible points till date
+   * Fetch leaderboard
+   * @param {number} cursor - Position of the cursor after which the records are to be fetched
    */
   async getLeaderboard(cursor) {
     try {
-      //Aggregation stages:-
-      //1. Match only users, leave out admins.
-      //2. Add a totalScore field by adding the 3 category scores.
-      //3. Project only the roll number, name and totalScore of students.
-      //4. Sort the list in descending order of total score.
       const leaderboardPromise = userModel
         .find({ role: 'user' }, '_id name totalScore dp')
         .sort('-totalScore _id')
