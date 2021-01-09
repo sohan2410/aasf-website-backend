@@ -59,11 +59,9 @@ export class Controller {
     try {
       const { roll } = req.user;
 
-      req.body.dp = xss(req.body.dp, xssOptions);
-      if (!req.body.dp || !validImage(req.body.dp))
-        throw { status: 400, message: 'Invalid Profile Picture' };
+      if (!req.file?.url) throw { status: 400, message: 'Invalid Profile Picture' };
 
-      const updatedUser = await UsersService.changeProfilePicture(roll, req.body.dp);
+      const updatedUser = await UsersService.changeProfilePicture(roll, req.file.url);
       res.status(200).json({
         user: updatedUser,
         message: 'Profile Picture Successfully Changed',
