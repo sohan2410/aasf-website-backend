@@ -81,14 +81,14 @@ class UsersService {
   /**
    * Change Profile Picture of a user
    * @param {String} roll - Roll number of the student
-   * @param {String} dp - Profile Picture of the student
+   * @param {String} fileName - Name of the file saved on Azure
    */
-  async changeProfilePicture(roll, dp) {
+  async changeProfilePicture(roll, fileName) {
     try {
       const user = await userModel.findByIdAndUpdate(
         roll,
         {
-          dp,
+          dp: `https://aasf.azureedge.net/dps/${fileName}`,
         },
         { new: true, select: { password: 0 } }
       );

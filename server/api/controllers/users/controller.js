@@ -61,7 +61,10 @@ export class Controller {
 
       if (!req.file?.url) throw { status: 400, message: 'Invalid Profile Picture' };
 
-      const updatedUser = await UsersService.changeProfilePicture(roll, req.file.url);
+      const updatedUser = await UsersService.changeProfilePicture(
+        roll,
+        req.file.url.split('/').pop()
+      );
       res.status(200).json({
         user: updatedUser,
         message: 'Profile Picture Successfully Changed',
