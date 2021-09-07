@@ -79,18 +79,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+          description: Invalid Password
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+        description: Token missing
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+        description: Invalid Token
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
 
+            
   /users/dp:
     put:
       tags:
         - Users
       servers:
         - url: /
-      description: Change user's profile picture
+      description: Change Profile Picture
       security:
         - Bearer: []
       requestBody:
-        description: Current Password and New Password
+        description: Roll Number and dp
         content:
           application/json:
             schema:
@@ -103,6 +128,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDetailsResponse'
+        400:
+          description: User does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        400:
+          description: Invalid Profile Picture
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+        description: Token missing
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+        description: Invalid Token
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
 
   /users/fcmToken:
     put:
@@ -139,11 +188,30 @@ paths:
         - Bearer: []
       responses:
         200:
-          description: Return details of user
+        description: Return details of user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDetailsResponse'
+        400:
+        description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+         401:
+        description: Token missing
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+        description: Invalid Token
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        
 
   /users/leaderboard:
     get:
@@ -168,6 +236,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeaderboardResponse'
+         401:
+        description: Token missing
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+        description: Invalid Token
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        
 
   /events:
     get:
@@ -194,7 +275,7 @@ paths:
       security:
         - Bearer: []
       requestBody:
-        description: The encrypted hash related to the event
+        description: The encrypted hash related to the event and roll number
         content:
           application/json:
             schema:
@@ -207,6 +288,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        400:
+          description: Already marked attendance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        400:
+          description: Invaid QR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+         401:
+        description: Token missing
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
+        401:
+        description: Invalid Token
+          content:
+             application/json:
+              schema:
+                 $ref: '#/components/schemas/Error'
 
   /admin/users/{roll}:
     put:
@@ -238,6 +343,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EditUserResponse'
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /admin/notifications:
     post:
@@ -279,6 +396,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventsResponse'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       tags:
         - Admin
@@ -301,6 +424,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /admin/events/{id}:
     put:
@@ -332,6 +461,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        400:
+           description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       tags:
         - Admin
@@ -354,6 +495,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /admin/events/qr/{id}/{day}:
     get:
@@ -384,6 +531,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QRResponse'
+        400:
+          description: Event not found or invalid Day number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /admin/events/goodies:
     post:
@@ -408,6 +567,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        400:
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /admin/events/winners:
     post:
@@ -432,6 +609,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        400:
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Not authorized to perform this action 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /spec:
     get:
