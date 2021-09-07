@@ -1,11 +1,8 @@
 # AASF-Website-Backend
 
-<img alt="GitHub issues" src="https://img.shields.io/github/issues/aasf-iiitm/aasf-website-backend"> <img alt="GitHub Hacktoberfest combined status" src="https://img.shields.io/github/hacktoberfest/2020/aasf-iiitm/aasf-website-backend"> ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square) [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-</br>
-
 **NOTE: THIS REPOSITORY IS OPEN ONLY TO THE STUDENTS OF IIITM GWALIOR, INDIA.**
 
-Newly built backend for AASF Website(revamped). Yet to be released.
+Newly built backend for AASF Website(revamped) and Mobile App. 
 
 ## Core Functions
 
@@ -16,6 +13,7 @@ Newly built backend for AASF Website(revamped). Yet to be released.
   - Get QR Code to mark attendance for a particular event.
   - Send report emails.
   - Add and edit user details.
+  - Send Push Notifications.
 
 - Events:
 
@@ -33,6 +31,7 @@ Newly built backend for AASF Website(revamped). Yet to be released.
 Get started developing...
 
 - You will need a .env file in the root folder for the system to run successfully. An example for the .env file has been written in .env.example. Modify the environment variables as you need and required before starting. Set NODE_ENV to `development` while running it in development mode.
+- You will also need a firebase.json file at the root level. You can download your own from the firebase console.
 - User has to be an admin for performing any admin-only functions. Admins can only be created directly from the database and not via any API.
 - To make yourself an admin, add a user document in the users' collection in the database named `AASF-DEV`(We use MongoDB for our database, so you can either use Mongo Shell or MongoDB Compass if you're running an instance locally, or use the MongoDB Atlas interface if you wish to use the cloud). 
 - Schema for the user document can be found [here](https://github.com/AASF-IIITM/aasf-website-backend/blob/master/server/models/user.js). Password field has to be hashed by bcrypt(10 rounds). You may use this hash as your password: $2b$10$W8hAgYAEOdzCKQr8oJWvF.tuqBK3OK2PLbmWeiKAbM6CZ9ycYEsPC. This hash is for the password "aasf_iiitm".

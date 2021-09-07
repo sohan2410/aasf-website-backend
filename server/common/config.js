@@ -1,8 +1,8 @@
 export const jwtSecret = process.env.JWT_SECRET;
 export const mongodbUri =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === 'production'
     ? process.env.MONGODB_PROD_URI
-    : process.env.NODE_ENV === "test"
+    : process.env.NODE_ENV === 'test'
     ? process.env.MONGODB_TEST_URI
     : process.env.MONGODB_DEV_URI;
 export const defaultPassword = process.env.DEFAULT_PASSWORD;
@@ -11,7 +11,8 @@ export const encryptionAlgorithm = process.env.ENCRYPTION_ALGORITHM;
 export const xssOptions = {
   whiteList: [],
   stripIgnoreTag: [],
-  stripIgnoreTagBody: ["script"],
+  stripIgnoreTagBody: ['script'],
 };
 export const emailId = process.env.EMAIL_ID;
 export const emailPassword = process.env.EMAIL_PASSWORD;
+export const azureStorageConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;

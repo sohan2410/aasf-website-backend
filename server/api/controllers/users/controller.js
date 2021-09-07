@@ -1,15 +1,15 @@
-import UsersService from "../../services/users.service";
-import xss from "xss";
+import UsersService from '../../services/users.service';
+import MailerService from '../../services/mailer.service';
+import xss from 'xss';
 
-import { xssOptions } from "../../../common/config";
-import validImage from "../../../utils/validImage";
+import { xssOptions } from '../../../common/config';
 
 export class Controller {
   async login(req, res, next) {
     try {
       const { roll, password } = req.body;
       const token = await UsersService.login(roll, password);
-      res.status(200).json({ token, message: "Successfully Logged in!" });
+      res.status(200).json({ token, message: 'Successfully Logged in!' });
     } catch (err) {
       next(err);
     }
@@ -18,8 +18,8 @@ export class Controller {
   async getUserDetails(req, res, next) {
     try {
       const { roll } = req.user;
-      const user = await UsersService.getUserDetails(roll);
-      res.status(200).json({ user, message: "Details successfully fetched" });
+      const { user, rank } = await UsersService.getUserDetails(roll);
+      res.status(200).json({ user, rank, message: 'Details successfully fetched' });
     } catch (err) {
       next(err);
     }
@@ -27,11 +27,12 @@ export class Controller {
 
   async getLeaderboard(req, res, next) {
     try {
-      const { leaderboard, totalScore } = await UsersService.getLeaderboard();
+      const { cursor } = req.query;
+      const { leaderboard, totalScore } = await UsersService.getLeaderboard(parseInt(cursor));
       res.status(200).json({
         leaderboard,
         totalScore,
-        message: "Leaderboard successfully fetched",
+        message: 'Leaderboard successfully fetched',
       });
     } catch (err) {
       next(err);
@@ -45,11 +46,10 @@ export class Controller {
 
       currentPassword = xss(currentPassword, xssOptions);
       newPassword = xss(newPassword, xssOptions);
-      if (!currentPassword || !newPassword)
-        throw { status: 400, message: "Invalid Password" };
+      if (!currentPassword || !newPassword) throw { status: 400, message: 'Invalid Password' };
 
       await UsersService.changePassword(roll, currentPassword, newPassword);
-      res.status(200).json({ message: "Password successfully changed!" });
+      res.status(200).json({ message: 'Password successfully changed!' });
     } catch (err) {
       next(err);
     }
@@ -59,18 +59,39 @@ export class Controller {
     try {
       const { roll } = req.user;
 
-      req.body.dp = xss(req.body.dp, xssOptions);
-      if (!req.body.dp || !validImage(req.body.dp))
-        throw { status: 400, message: "Invalid Profile Picture" };
+      if (!req.file?.url) throw { status: 400, message: 'Invalid Profile Picture' };
 
       const updatedUser = await UsersService.changeProfilePicture(
         roll,
-        req.body.dp
+        req.file.url.split('/').pop()
       );
       res.status(200).json({
         user: updatedUser,
-        message: "Profile Picture Successfully Changed",
+        message: 'Profile Picture Successfully Changed',
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async changeFcmToken(req, res, next) {
+    try {
+      req.body.fcmToken = xss(req.body.fcmToken, xssOptions);
+      if (!req.body.fcmToken) throw { status: 400, message: 'Invalid FCM Token!' };
+
+      await UsersService.changeFcmToken(req.user.roll, req.body.fcmToken);
+      res.status(200).json({ message: 'Successfully updated FCM Token' });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async sendSuggestion(req, res, next) {
+    try {
+      const { suggestion, anonymous } = req.body;
+
+      await MailerService.sendSuggestion(suggestion, anonymous ? null : req.user.roll);
+      res.status(200).json({ message: 'Successfully sent suggestion' });
     } catch (err) {
       next(err);
     }
