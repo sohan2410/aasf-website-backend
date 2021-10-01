@@ -200,19 +200,7 @@ class UsersService {
       throw err;
     }
   }
-  /**
-   * Admins to add new admins
-   * @param {String} user - roll number of student
-   */
-  async addAdmin(user) {
-    try {
-      const user = await userModel.findByIdAndUpdate(user, { role: 'admin' });
-      if (!user) throw { message: 'User not found', status: 400 };
-    } catch (err) {
-      l.error('[ADD GOODIES]', err, user);
-      throw err;
-    }
-  }
+
   /**
    * Generate the JWT Token for the user
    * @param {String} roll - Roll number of the student
