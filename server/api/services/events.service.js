@@ -5,6 +5,7 @@ import QRCode from 'qrcode';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
+import achievementModel from '../../models/achievements';
 
 import { encryptionKey, encryptionAlgorithm } from '../../common/config';
 
@@ -156,17 +157,19 @@ class EventsService {
         points[`score.${eventData.category}`] = eventData.importance * 5 + (2 - index) * 5;
         points['totalScore'] = eventData.importance * 5 + (2 - index) * 5;
 
-        const achievement = {};
-        if (index === 0) achievement['achievements.first'] = eventData.name;
-        else if (index === 1) achievement['achievements.second'] = eventData.name;
-        else if (index === 2) achievement['achievements.third'] = eventData.name;
-
+        winner.forEach(item => {
+          const newAchievement = new Achievement({
+            userId: item,
+            eventId,
+            position: index + 1,
+          });
+          newAchievement.save();
+        });
         promises.push(
           userModel.updateMany(
             { _id: { $in: winner } },
             {
               $inc: points,
-              $push: achievement,
             }
           )
         );

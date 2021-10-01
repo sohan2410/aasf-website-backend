@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
+import achievementModel from '../../models/achievements';
 import { jwtSecret } from '../../common/config';
 
 const saltRounds = 10;
@@ -25,7 +26,7 @@ class UsersService {
         let rno = roll.split('-')[1];
 
         user['email'] = `${batch}_${year}${rno}@iiitm.ac.in`;
-      })
+      });
 
       await userModel.insertMany(users);
     } catch (err) {
@@ -129,7 +130,8 @@ class UsersService {
         .find({ role: 'user', totalScore: { $gt: user.totalScore } })
         .countDocuments();
 
-      return { user, rank: rank + 1 };
+      const achievement = await achievementModel.find({ userId: roll }).populate('eventId');
+      return { user, rank: rank + 1, achievement };
     } catch (err) {
       l.error('[GET USER DETAILS]', err, roll);
       throw err;
