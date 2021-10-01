@@ -213,7 +213,6 @@ class EventsService {
   async uploadAttendance(file, eventId, day) {
     try {
       const attendance = await csv().fromFile(__dirname + `/../../../public/events/${file}`);
-      console.log(attendance);
       const eventData = await this.fetchEventData.get(eventId);
       let eventDate = new Date(eventData.startDate);
       eventDate.setDate(eventDate.getDate() + parseInt(day, 10) - 1);
