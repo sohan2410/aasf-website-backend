@@ -5,7 +5,6 @@ import * as jwt from 'jsonwebtoken';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
-import achievementModel from '../../models/achievements';
 import { jwtSecret } from '../../common/config';
 
 const saltRounds = 10;
@@ -130,8 +129,7 @@ class UsersService {
         .find({ role: 'user', totalScore: { $gt: user.totalScore } })
         .countDocuments();
 
-      const achievement = await achievementModel.find({ userId: roll }).populate('eventId');
-      return { user, rank: rank + 1, achievement };
+      return { user, rank: rank + 1 };
     } catch (err) {
       l.error('[GET USER DETAILS]', err, roll);
       throw err;
