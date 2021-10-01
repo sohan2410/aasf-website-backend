@@ -198,7 +198,20 @@ class UsersService {
       throw err;
     }
   }
-
+  /**
+   *
+   * @param {String} user - user that need to be modified as admin
+   */
+  async addAdmin(user) {
+    try {
+      const add_admin = await userModel.findByIdAndUpdate(user, { role: 'admin' });
+      if (!add_admin) throw { status: 400, message: 'User not found' };
+      return add_admin;
+    } catch (err) {
+      l.error('[ADD ADMIN]', err, user);
+      throw err;
+    }
+  }
   /**
    * Generate the JWT Token for the user
    * @param {String} roll - Roll number of the student
