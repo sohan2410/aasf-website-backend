@@ -84,25 +84,25 @@ paths:
           content:
             application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         401:
           description: Invalid Password
           content:
              application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         401:
-        description: Token missing
+          description: Token missing
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         401:
-        description: Invalid Token
+          description: Invalid Token
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
             
   /users/dp:
@@ -141,17 +141,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         401:
-        description: Token missing
+          description: Token missing
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         401:
-        description: Invalid Token
+          description: Invalid Token
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /users/fcmToken:
     put:
@@ -188,29 +188,29 @@ paths:
         - Bearer: []
       responses:
         200:
-        description: Return details of user
+          description: Return details of user
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDetailsResponse'
         400:
-        description: User not found
+          description: User not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-         401:
-        description: Token missing
-          content:
-             application/json:
-              schema:
-                 $ref: '#/components/schemas/Error'
         401:
-        description: Invalid Token
+          description: Token missing
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Invalid Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         
 
   /users/leaderboard:
@@ -236,18 +236,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeaderboardResponse'
-         401:
-        description: Token missing
-          content:
-             application/json:
-              schema:
-                 $ref: '#/components/schemas/Error'
         401:
-        description: Invalid Token
+          description: Token missing
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Invalid Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         
 
   /events:
@@ -300,18 +300,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-         401:
-        description: Token missing
-          content:
-             application/json:
-              schema:
-                 $ref: '#/components/schemas/Error'
         401:
-        description: Invalid Token
+          description: Token missing
           content:
-             application/json:
+            application/json:
               schema:
-                 $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Invalid Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /admin/users/{roll}:
     put:
@@ -462,7 +462,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
         400:
-           description: Event not found
+          description: Event not found
           content:
             application/json:
               schema:
@@ -536,7 +536,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: '#/components/schemas/Error'
         401:
           description: Not authorized to perform this action 
           content:
