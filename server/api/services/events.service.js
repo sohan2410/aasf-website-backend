@@ -5,7 +5,7 @@ import QRCode from 'qrcode';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
-
+import achievementModel from '../../models/achievement';
 import { encryptionKey, encryptionAlgorithm } from '../../common/config';
 
 class EventsService {
@@ -170,7 +170,6 @@ class EventsService {
             { _id: { $in: winner } },
             {
               $inc: points,
-              $push: achievement,
             }
           )
         );

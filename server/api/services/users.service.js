@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
+import achievementModel from '../../models/achievement';
 import { jwtSecret } from '../../common/config';
 
 const saltRounds = 10;
