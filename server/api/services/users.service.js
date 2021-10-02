@@ -25,7 +25,7 @@ class UsersService {
         let rno = roll.split('-')[1];
 
         user['email'] = `${batch}_${year}${rno}@iiitm.ac.in`;
-      })
+      });
 
       await userModel.insertMany(users);
     } catch (err) {
@@ -198,7 +198,19 @@ class UsersService {
       throw err;
     }
   }
-
+  /**
+   * Allows admins to create another admin
+   * @param {String} user - User ID of the user who has to be made admin
+   */
+  async addAdmin(user) {
+    try {
+      const newAdmin = await userModel.findByIdAndUpdate(user, { role: 'admin' });
+      if (!newAdmin) throw { status: 400, message: 'User not found' };
+    } catch (err) {
+      l.error('[ADD ADMIN]', err, user);
+      throw err;
+    }
+  }
   /**
    * Generate the JWT Token for the user
    * @param {String} roll - Roll number of the student
