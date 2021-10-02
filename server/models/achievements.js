@@ -4,5 +4,4 @@ const Achievement = new mongoose.Schema({
   eventId: { type: String, required: true, ref: 'Event' },
   position: { type: Number, required: true },
 });
-
 export default mongoose.model('Achievement', Achievement);
