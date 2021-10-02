@@ -28,4 +28,4 @@ export default express
   .Router()
   .post('/upload', upload.single('users'), controller.uploadUsers)
   .put('/:roll', controller.editUserDetails)
-  .post('/addadmin', controller.addAdmin);
+  .post('/addAdmin', controller.addAdmin);

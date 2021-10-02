@@ -199,14 +199,13 @@ class UsersService {
     }
   }
   /**
-   *
-   * @param {String} user - user that need to be modified as admin
+   * Allows admins to create another admin
+   * @param {String} user - User ID of the user who has to be made admin
    */
   async addAdmin(user) {
     try {
-      const add_admin = await userModel.findByIdAndUpdate(user, { role: 'admin' });
-      if (!add_admin) throw { status: 400, message: 'User not found' };
-      return add_admin;
+      const newAdmin = await userModel.findByIdAndUpdate(user, { role: 'admin' });
+      if (!newAdmin) throw { status: 400, message: 'User not found' };
     } catch (err) {
       l.error('[ADD ADMIN]', err, user);
       throw err;
