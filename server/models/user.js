@@ -47,21 +47,6 @@ const User = new mongoose.Schema({
       default: 0,
     },
   },
-  //Achievements in contests
-  achievements: {
-    first: {
-      type: [String],
-      default: [],
-    },
-    second: {
-      type: [String],
-      default: [],
-    },
-    third: {
-      type: [String],
-      default: [],
-    },
-  },
   //Role of the user - user/admin. user by default
   role: {
     type: String,
