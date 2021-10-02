@@ -965,4 +965,4 @@ components:
       properties:
         userId:
           type: string
-          example: 2020IMG016
+          example: 2020IMG-016
