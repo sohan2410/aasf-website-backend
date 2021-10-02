@@ -5,7 +5,6 @@ import QRCode from 'qrcode';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
-import achievementModel from '../../models/achievements';
 
 import { encryptionKey, encryptionAlgorithm } from '../../common/config';
 
@@ -127,8 +126,8 @@ class EventsService {
       if (!eventData) throw { message: 'Event not found', status: 400 };
 
       const update = {};
-      update[`score.${eventData.category}`] = eventData.importance * 5;
-      update['totalScore'] = eventData.importance * 5;
+      update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
+      update['totalScore'] = eventData.importance * 5 + 5;
       const user = await userModel.findByIdAndUpdate(roll, { $inc: update });
       if (!user) throw { message: 'User not found', status: 400 };
     } catch (err) {
@@ -171,6 +170,7 @@ class EventsService {
             { _id: { $in: winner } },
             {
               $inc: points,
+              $push: achievement,
             }
           )
         );
@@ -233,8 +233,8 @@ class EventsService {
       const rollNumbers = validRollNumbers.map(student => student.roll);
 
       const update = {};
-      update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
-      update['totalScore'] = eventData.importance * 5 + 5;
+      update[`score.${eventData.category}`] = eventData.importance * 5;
+      update['totalScore'] = eventData.importance * 5;
 
       //Update users' scores
       const user = userModel.updateMany(

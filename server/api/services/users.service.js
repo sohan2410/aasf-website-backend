@@ -5,7 +5,6 @@ import * as jwt from 'jsonwebtoken';
 import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
-import achievementModel from '../../models/achievements';
 import { jwtSecret } from '../../common/config';
 
 const saltRounds = 10;
@@ -130,8 +129,8 @@ class UsersService {
         .find({ role: 'user', totalScore: { $gt: user.totalScore } })
         .countDocuments();
 
-      const achievement = await achievementModel.find({ userId: roll }).populate('eventId','name');
-      return { user, rank: rank + 1, achievement };
+      const achievements = await achievementModel.find({ userId: roll }).populate('eventId','name');
+      return { user, rank: rank + 1, achievements };
     } catch (err) {
       l.error('[GET USER DETAILS]', err, roll);
       throw err;
@@ -200,7 +199,19 @@ class UsersService {
       throw err;
     }
   }
-
+  /**
+   * Allows admins to create another admin
+   * @param {String} user - User ID of the user who has to be made admin
+   */
+  async addAdmin(user) {
+    try {
+      const newAdmin = await userModel.findByIdAndUpdate(user, { role: 'admin' });
+      if (!newAdmin) throw { status: 400, message: 'User not found' };
+    } catch (err) {
+      l.error('[ADD ADMIN]', err, user);
+      throw err;
+    }
+  }
   /**
    * Generate the JWT Token for the user
    * @param {String} roll - Roll number of the student
