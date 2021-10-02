@@ -18,8 +18,8 @@ export class Controller {
   async getUserDetails(req, res, next) {
     try {
       const { roll } = req.user;
-      const { user, rank } = await UsersService.getUserDetails(roll);
-      res.status(200).json({ user, rank, message: 'Details successfully fetched' });
+      const { user, rank ,achievement} = await UsersService.getUserDetails(roll);
+      res.status(200).json({ user, rank, achievement, message: 'Details successfully fetched' });
     } catch (err) {
       next(err);
     }

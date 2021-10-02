@@ -157,13 +157,14 @@ class EventsService {
         points[`score.${eventData.category}`] = eventData.importance * 5 + (2 - index) * 5;
         points['totalScore'] = eventData.importance * 5 + (2 - index) * 5;
 
-        winner.forEach(item => {
-          const newAchievement = new Achievement({
-            userId: item,
-            eventId,
-            position: index + 1,
-          });
-          newAchievement.save();
+        winner.forEach(userId => {
+          promises.push(
+            achievementModel.create({
+              userId: userId,
+              eventId,
+              position: index + 1,
+            })
+          )
         });
         promises.push(
           userModel.updateMany(

@@ -130,7 +130,7 @@ class UsersService {
         .find({ role: 'user', totalScore: { $gt: user.totalScore } })
         .countDocuments();
 
-      const achievement = await achievementModel.find({ userId: roll }).populate('eventId');
+      const achievement = await achievementModel.find({ userId: roll }).populate('eventId','name');
       return { user, rank: rank + 1, achievement };
     } catch (err) {
       l.error('[GET USER DETAILS]', err, roll);
