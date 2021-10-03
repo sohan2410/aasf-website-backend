@@ -6,7 +6,7 @@ import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
 import achievementModel from '../../models/achievement';
-import { jwtSecret } from '../../common/config';
+import { defaultPassword, jwtSecret } from '../../common/config';
 
 const saltRounds = 10;
 
@@ -26,6 +26,7 @@ class UsersService {
         let rno = roll.split('-')[1];
 
         user['email'] = `${batch}_${year}${rno}@iiitm.ac.in`;
+        user['password'] = await bcrypt.hash(defaultPassword, saltRounds);
       });
 
       await userModel.insertMany(users);
