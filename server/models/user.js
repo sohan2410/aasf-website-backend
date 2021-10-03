@@ -18,7 +18,6 @@ const User = new mongoose.Schema({
   //Hashed password
   password: {
     type: String,
-    default: defaultPassword,
   },
   //Firebase Cloud Messaging Token for push notifications
   fcmToken: {
