@@ -253,7 +253,7 @@ class UsersService {
       const promises = [];
 
       promises.push(
-        otpModel.update({ _id: roll }, { otp }, { upsert: true, setDefaultsOnInsert: true })
+        otpModel.updateOne({ _id: roll }, { otp }, { upsert: true, setDefaultsOnInsert: true })
       );
       promises.push(MailerService.sendPasswordResetEmail(user.email, user.name, otp));
       await Promise.all(promises);
