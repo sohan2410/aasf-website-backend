@@ -9,6 +9,8 @@ import achievementModel from '../../models/achievement';
 import otpModel from '../../models/otp'
 import { jwtSecret } from '../../common/config';
 import MailerService from './mailer.service';
+import { defaultPassword, jwtSecret } from '../../common/config';
+
 const saltRounds = 10;
 
 class UsersService {
@@ -19,7 +21,7 @@ class UsersService {
   async uploadUsers(file) {
     try {
       const users = await csv().fromFile(__dirname + `/../../../public/users/${file}`);
-
+      const hash = await bcrypt.hash(defaultPassword, saltRounds);
       users.forEach(user => {
         let roll = user['_id'];
         let year = roll.substring(0, 4);
@@ -27,6 +29,7 @@ class UsersService {
         let rno = roll.split('-')[1];
 
         user['email'] = `${batch}_${year}${rno}@iiitm.ac.in`;
+        user['password'] = hash;
       });
 
       await userModel.insertMany(users);
