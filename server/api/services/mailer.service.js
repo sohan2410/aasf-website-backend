@@ -5,7 +5,8 @@ import { emailId, emailPassword } from '../../common/config';
 import { reportRecipients, aasf, dev } from '../../utils/emailRecipients';
 import { reportTempate } from '../../utils/emailTemplates/report';
 import { suggestionTemplate } from '../../utils/emailTemplates/suggestion';
-import { otpTemplate } from '../../utils/otpTemplate';
+import { otpTemplate } from '../../utils/emailTemplates/otpTemplate';
+
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
