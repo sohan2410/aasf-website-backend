@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+
+//Before starting the database, please create the following index using mongo shell
+// db.otp.createIndex( {"createdAt": 1 } , {expireAfterSeconds: 3600} );
+
 const otp = new mongoose.Schema(
   {
     _id: { type: String, required: [true, 'Roll number required'] },

@@ -2,7 +2,7 @@
 
 **NOTE: THIS REPOSITORY IS OPEN ONLY TO THE STUDENTS OF IIITM GWALIOR, INDIA.**
 
-Newly built backend for AASF Website(revamped) and Mobile App. 
+Newly built backend for AASF Website(revamped) and Mobile App.
 
 ## Core Functions
 
@@ -34,9 +34,10 @@ Get started developing...
 - You will also need a firebase.json file at the root level. You can download your own from the firebase console. You can find instructions on how to get this file in the first couple of paragraphs of [this article](https://medium.com/tech-iiitg/push-notifications-in-a-react-native-application-using-firebase-node-js-and-express-js-67b3391b6c25).
 - To get an Azure Connection String, signup on Azure(preferably using your University email ID to avail [student benefits](https://azure.microsoft.com/en-in/free/students/)), create a new `Storage Account`, go to `Access Keys` within your storage account, click on `Show Access Keys` and copy the first `Connection String` and paste it in the `.env` file.
 - User has to be an admin for performing any admin-only functions. Admins can only be created directly from the database and not via any API.
-- To make yourself an admin, add a user document in the users' collection in the database named `AASF-DEV`(We use MongoDB for our database, so you can either use Mongo Shell or MongoDB Compass if you're running an instance locally, or use the MongoDB Atlas interface if you wish to use the cloud). 
-- Schema for the user document can be found [here](https://github.com/AASF-IIITM/aasf-website-backend/blob/master/server/models/user.js). Password field has to be hashed by bcrypt(10 rounds). You may use this hash as your password: $2b$10$W8hAgYAEOdzCKQr8oJWvF.tuqBK3OK2PLbmWeiKAbM6CZ9ycYEsPC. This hash is for the password "aasf_iiitm".
+- To make yourself an admin, add a user document in the users' collection in the database named `AASF-DEV`(We use MongoDB for our database, so you can either use Mongo Shell or MongoDB Compass if you're running an instance locally, or use the MongoDB Atlas interface if you wish to use the cloud).
+- Schema for the user document can be found [here](https://github.com/AASF-IIITM/aasf-website-backend/blob/master/server/models/user.js). Password field has to be hashed by bcrypt(10 rounds). You may use this hash as your password: $2b$10\$W8hAgYAEOdzCKQr8oJWvF.tuqBK3OK2PLbmWeiKAbM6CZ9ycYEsPC. This hash is for the password "aasf_iiitm".
 - Once you have created an admin user, start the server by following the below commands.
+- Before starting the database, please create the following index using mongo shell `db.otp.createIndex( {"createdAt": 1 } , {expireAfterSeconds: 3600} );`
 
 ```shell
 # install deps
@@ -50,11 +51,11 @@ npm run dev
 - Create a folder named `users` under the public folder.
 - For uploading new users, you will have to use Postman since uploading a CSV file is not yet supported in Swagger UI. The route for uploading new users is /admin/users/upload. Make you sure pass the JWT token in the Authorization header as `bearer {token}`. Upload a [Sample CSV](https://docs.google.com/spreadsheets/d/1cCKq79B3jO3mMGYP6KVn42CKrc5BIbkDTCLX4RMi2JI/edit?usp=sharing) to add new users to the database. The file has to be uploaded in the form-data body with the field name as `users`.
 - You can add sample events in the similar manner. Refer to `routes.js` files in the server folder for the main routes and `routes.js` files in sub-folders to find sub-routes. [Sample CSV](https://docs.google.com/spreadsheets/d/1wGRoW9a7JXwEQ15D7IyqykiEiypAoN5SroYmrxGy7W0/edit?usp=sharing) for events. Modify the dates of the events as needed.
-- Once there are admin(s), users and events in the database, you're all set to roll. Go through the code and try to understand the code flow. On a high level, the flow goes like:- 
+- Once there are admin(s), users and events in the database, you're all set to roll. Go through the code and try to understand the code flow. On a high level, the flow goes like:-
   - An API is hit from the client-side.
   - The main route is matched with a route in the `routes.js` folder in the server folder.
   - A `router` is selected based on the route given, and the request is passed on to a `controller`.
-  - The controller receives the request and delegates the operations to be performed to `services`. 
+  - The controller receives the request and delegates the operations to be performed to `services`.
   - The services perform the operations and return to the controller, which then sends the response to the client.
   - Overall, the control sequence is `client request -> server/routes.js -> server/api/controllers/{some controller}/router.js -> server/api/controllers/{some controller}/controller.js -> server/api/services/{some service} -> server/api/controllers/{some controller}/controller.js -> client response`.
 - In case you have any doubts, feel free to post it on the [AASF Developers' Circle Facebook Group](https://www.facebook.com/groups/DevsCircle) or send an email to aasf.iiitmg@gmail.com with the subject `[AASF-WEBSITE-BACKEND] Query`.
