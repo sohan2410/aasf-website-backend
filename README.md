@@ -35,7 +35,6 @@ Get started developing...
 - To get an Azure Connection String, signup on Azure(preferably using your University email ID to avail [student benefits](https://azure.microsoft.com/en-in/free/students/)), create a new `Storage Account`, go to `Access Keys` within your storage account, click on `Show Access Keys` and copy the first `Connection String` and paste it in the `.env` file.
 - User has to be an admin for performing any admin-only functions. Admins can only be created directly from the database and not via any API.
 - To make yourself an admin, add a user document in the users' collection in the database named `AASF-DEV`(We use MongoDB for our database, so you can either use Mongo Shell or MongoDB Compass if you're running an instance locally, or use the MongoDB Atlas interface if you wish to use the cloud).
-- Schema for the user document can be found [here](https://github.com/AASF-IIITM/aasf-website-backend/blob/master/server/models/user.js). Password field has to be hashed by bcrypt(10 rounds). You may use this hash as your password: $2b$10\$W8hAgYAEOdzCKQr8oJWvF.tuqBK3OK2PLbmWeiKAbM6CZ9ycYEsPC. This hash is for the password "aasf_iiitm".
 - Once you have created an admin user, start the server by following the below commands.
 - Before starting the database, please create the following index using mongo shell `db.otp.createIndex( {"createdAt": 1 } , {expireAfterSeconds: 3600} );`
 
