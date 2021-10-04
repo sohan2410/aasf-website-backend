@@ -203,20 +203,4 @@ describe('Admin Actions', () => {
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
   });
-
-  it('admins to add admin', async () => {
-    let response = await request(Server)
-      .put('/admin/users/2018BCS-000')
-      .set('Authorization', `bearer ${token}`)
-      .send({ password: 'aasf@iiitm' });
-    expect(response.body).to.be.an('object');
-    expect(response.status).to.equal(200);
-
-    response = await request(Server)
-      .post('/addAdmin')
-      .send({ userId: '2020IMG-016' });
-    expect(response.body).to.be.an('object');
-    expect(response.status).to.equal(200);
-    expect(response.body.message).to.be.a('string');
-  });
 });

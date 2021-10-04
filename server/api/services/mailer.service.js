@@ -5,7 +5,7 @@ import { emailId, emailPassword } from '../../common/config';
 import { reportRecipients, aasf, dev } from '../../utils/emailRecipients';
 import { reportTempate } from '../../utils/emailTemplates/report';
 import { suggestionTemplate } from '../../utils/emailTemplates/suggestion';
-
+import { otpTemplate } from '../../utils/otpTemplate';
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -56,6 +56,24 @@ class MailerService {
     }
   }
 
+  /**
+   *
+   * @param {string} mail - mailId of student
+   * @param {integer} otp - otp
+   */
+  async sendPasswordResetEmail(userEmailId, userName, otp) {
+    try {
+      const mailOptions = {
+        from: emailId,
+        to: userEmailId,
+        subject: `OTP to reset password`,
+        text: otpTemplate(userName, otp),
+      };
+      this.triggerMail(mailOptions);
+    } catch (err) {
+      throw err;
+    }
+  }
   async triggerMail(mailOptions) {
     try {
       await transporter.sendMail(mailOptions);

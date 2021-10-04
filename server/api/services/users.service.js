@@ -6,8 +6,9 @@ import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
 import achievementModel from '../../models/achievement';
+import otpModel from '../../models/otp'
 import { jwtSecret } from '../../common/config';
-
+import MailerService from './mailer.service';
 const saltRounds = 10;
 
 class UsersService {
@@ -229,6 +230,53 @@ class UsersService {
       },
       jwtSecret
     );
+  }
+  /**
+   * Generate OTP for the user to reset password
+   * @param {String} roll - Roll number of the student
+   */
+   forgotPassword(roll) {
+    try {
+      const user = await userModel.findById(roll);
+      if (!user) throw { status: 400, message: "User not found" };
+  
+      // Checking if OTP of roll already in otp model
+      const checkOTP = await otpModel.findById(roll);
+  
+      // Deleting old OTP of roll if already exists
+      if (checkOTP) otpModel.findByIdAndDelete(roll);
+  
+      const otp = Math.floor(100000 + Math.random() * 900000);
+  
+      otpModel.insert({ _id: user.id, otp, createdAt: new Date() });
+  
+      await MailerService.sendPasswordResetEmail(user.email, user.name, otp);
+    } catch (err) {
+      l.error("[FORGOT PASSWORD]", err, roll);
+    }
+  }
+  /**
+   * 
+   * @param {string} roll Roll number of students to
+   * @param {integer} otp OTP to reset password
+   * @param {string} password new password
+   */
+   resetPassword(roll, otp, password) {
+    try {
+      const user = await userModel.findById(roll);
+      if (!user) throw { status: 400, message: "User not found" };
+  
+      const otpFind = await otpModel.findById(roll);
+      if (otpFind.otp !== otp) throw { status: 400, message: "Invalid OTP" };
+  
+      const hash = await bcrypt.hash(password, saltRounds);
+      await userModel.findByIdAndUpdate(roll, {
+        password: hash,
+      });
+      otpModel.findByIdAndDelete(roll);
+    } catch (err) {
+      l.error("[RESET PASSWORD]", err, roll);
+    }
   }
 }
 

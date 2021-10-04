@@ -36,4 +36,6 @@ export default express
   .put('/dp', isAuthenticated, upload.single('dp'), controller.changeProfilePicture)
   .put('/fcmToken', isAuthenticated, controller.changeFcmToken)
   .get('/details', isAuthenticated, controller.getUserDetails)
-  .get('/leaderboard', isAuthenticated, controller.getLeaderboard);
+  .get('/leaderboard', isAuthenticated, controller.getLeaderboard)
+  .post('/forgotPassword', controller.forgotPassword)
+  .post('/resetPassword', controller.resetPassword);
