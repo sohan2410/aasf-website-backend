@@ -245,7 +245,7 @@ class UsersService {
    */
   async forgotPassword(roll) {
     try {
-      const user = userModel.findById(roll);
+      const user = await userModel.findById(roll);
       if (!user) throw { status: 400, message: 'User not found' };
 
       const otp = otpGenerator();
