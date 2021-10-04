@@ -9,6 +9,7 @@ import achievementModel from '../../models/achievement';
 import otpModel from '../../models/otp';
 import MailerService from './mailer.service';
 import { defaultPassword, jwtSecret } from '../../common/config';
+import { otpGenerator } from '../../utils/otpGenerator';
 
 const saltRounds = 10;
 
@@ -244,22 +245,21 @@ class UsersService {
    */
   async forgotPassword(roll) {
     try {
-      const user = await userModel.findById(roll);
+      const user = userModel.findById(roll);
       if (!user) throw { status: 400, message: 'User not found' };
 
-      // Checking if OTP of roll already in otp model
-      const checkOTP = await otpModel.findById(roll);
+      const otp = otpGenerator();
 
-      // Deleting old OTP of roll if already exists
-      if (checkOTP) otpModel.findByIdAndDelete(roll);
+      const promises = [];
 
-      const otp = Math.floor(100000 + Math.random() * 900000);
-
-      otpModel.insert({ _id: user.id, otp, createdAt: new Date() });
-
-      await MailerService.sendPasswordResetEmail(user.email, user.name, otp);
+      promises.push(
+        otpModel.update({ _id: roll }, { otp }, { upsert: true, setDefaultsOnInsert: true })
+      );
+      promises.push(MailerService.sendPasswordResetEmail(user.email, user.name, otp));
+      await Promise.all(promises);
     } catch (err) {
       l.error('[FORGOT PASSWORD]', err, roll);
+      throw err;
     }
   }
 
@@ -278,12 +278,18 @@ class UsersService {
       if (otpFind.otp !== otp) throw { status: 400, message: 'Invalid OTP' };
 
       const hash = await bcrypt.hash(password, saltRounds);
-      await userModel.findByIdAndUpdate(roll, {
-        password: hash,
-      });
-      otpModel.findByIdAndDelete(roll);
+
+      const promises = [];
+      promises.push(
+        userModel.findByIdAndUpdate(roll, {
+          password: hash,
+        })
+      );
+      promises.push(otpModel.findByIdAndDelete(roll));
+      await Promise.all(promises);
     } catch (err) {
       l.error('[RESET PASSWORD]', err, roll);
+      throw err;
     }
   }
 }
