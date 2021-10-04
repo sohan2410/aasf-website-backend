@@ -1,5 +1,6 @@
 import chai from 'chai';
 import request from 'supertest';
+import bcrypt from 'bcrypt';
 import Server from '../server';
 import mongo from '../server/common/mongo';
 import userModel from '../server/models/user';
@@ -8,10 +9,15 @@ const expect = chai.expect;
 
 describe('Users Authorization', () => {
   before(async () => {
+    const userPassword = 'aasf_iiitm';
+    const saltRounds = 10;
+
+    const password = await bcrypt.hash(userPassword, saltRounds);
     await mongo();
     await userModel.create({
       _id: '2018BCS-000',
       name: 'AASF',
+      password,
     });
   });
 
@@ -53,24 +59,27 @@ describe('Users Authorization', () => {
 });
 
 describe('User Operations(Change Password, Get Details, Leaderboard)', () => {
+  let token;
+
   before(async () => {
+    const userPassword = 'aasf_iiitm';
+    const saltRounds = 10;
+
+    const password = await bcrypt.hash(userPassword, saltRounds);
     await mongo();
     await userModel.create({
       _id: '2018BCS-000',
       name: 'AASF',
+      password,
     });
-  });
-
-  after(async () => {
-    await userModel.deleteMany({});
-  });
-
-  let token;
-  before(async () => {
     const response = await request(Server)
       .post('/users/login')
       .send({ roll: '2018BCS-000', password: 'aasf_iiitm' });
     token = response.body.token;
+  });
+
+  after(async () => {
+    await userModel.deleteMany({});
   });
 
   it('changes password successfully for logged-in user', async () => {
@@ -120,17 +129,17 @@ describe('User Operations(Change Password, Get Details, Leaderboard)', () => {
       .set('Authorization', `bearer ${token}`);
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
-    expect(response.body).to.have.all.keys('user', 'rank', 'message');
+    expect(response.body).to.have.all.keys('user', 'rank', 'achievements', 'message');
 
     expect(response.body.user).to.be.an('object');
+    expect(response.body.rank).to.be.a('number');
+    expect(response.body.achievements).to.be.an('array');
     expect(response.body.message).to.be.a('string');
 
-    expect(response.body.user).to.include.all.keys('_id', 'name', 'score', 'achievements', 'role');
+    expect(response.body.user).to.include.all.keys('_id', 'name', 'score', 'role');
     expect(response.body.user._id).to.be.a('string');
     expect(response.body.user.name).to.be.a('string');
     expect(response.body.user.score).to.be.an('object');
-    expect(response.body.user.achievements).to.be.an('object');
-    expect(response.body.user.achievements).to.have.all.keys('first', 'second', 'third');
     expect(response.body.user.role).to.be.a('string');
   });
 
@@ -167,15 +176,21 @@ describe('User Operations(Change Password, Get Details, Leaderboard)', () => {
 describe('Admin Actions', () => {
   let token;
   before(async () => {
+    const userPassword = 'aasf_iiitm';
+    const saltRounds = 10;
+
+    const password = await bcrypt.hash(userPassword, saltRounds);
     await mongo();
     await userModel.create({
       _id: '2018BCS-000',
       name: 'AASF',
+      password,
     });
     await userModel.create({
       _id: '2018BCS-031',
       name: 'Guna Shekar',
       role: 'admin',
+      password,
     });
 
     const response = await request(Server)
