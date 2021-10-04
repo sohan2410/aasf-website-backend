@@ -55,6 +55,34 @@ export class Controller {
     }
   }
 
+  async forgotPassword(req, res, next) {
+    try {
+      const { roll } = req.body;
+
+      await UsersService.forgotPassword(roll);
+      res.status(200).json({ message: 'Reset Email Sent Successful!' });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async resetPassword(req, res, next) {
+    try {
+      let { roll, otp, newPassword, confirmPassword } = req.body;
+
+      newPassword = xss(newPassword, xssOptions);
+      confirmPassword = xss(confirmPassword, xssOptions);
+      if (!newPassword || !confirmPassword) throw { status: 400, message: 'Invalid Password' };
+
+      if (newPassword !== confirmPassword) {
+        res.status(400).json({ token, message: 'Password does not match!' });
+      }
+      await UsersService.resetPassword(roll, otp, newPassword);
+      res.status(200).json({ message: 'Password Reset Successful!' });
+    } catch (err) {
+      next(err);
+    }
+  }
   async changeProfilePicture(req, res, next) {
     try {
       const { roll } = req.user;

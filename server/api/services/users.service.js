@@ -6,7 +6,10 @@ import l from '../../common/logger';
 import userModel from '../../models/user';
 import eventModel from '../../models/event';
 import achievementModel from '../../models/achievement';
+import otpModel from '../../models/otp';
+import MailerService from './mailer.service';
 import { defaultPassword, jwtSecret } from '../../common/config';
+import { otpGenerator } from '../../utils/otpGenerator';
 
 const saltRounds = 10;
 
@@ -131,7 +134,9 @@ class UsersService {
         .find({ role: 'user', totalScore: { $gt: user.totalScore } })
         .countDocuments();
 
-      const achievements = await achievementModel.find({ userId: roll }).populate('eventId','name');
+      const achievements = await achievementModel
+        .find({ userId: roll })
+        .populate('eventId', 'name');
       return { user, rank: rank + 1, achievements };
     } catch (err) {
       l.error('[GET USER DETAILS]', err, roll);
@@ -201,6 +206,7 @@ class UsersService {
       throw err;
     }
   }
+
   /**
    * Allows admins to create another admin
    * @param {String} user - User ID of the user who has to be made admin
@@ -214,6 +220,7 @@ class UsersService {
       throw err;
     }
   }
+
   /**
    * Generate the JWT Token for the user
    * @param {String} roll - Roll number of the student
@@ -230,6 +237,60 @@ class UsersService {
       },
       jwtSecret
     );
+  }
+
+  /**
+   * Generate OTP for the user to reset password
+   * @param {String} roll - Roll number of the student
+   */
+  async forgotPassword(roll) {
+    try {
+      const user = await userModel.findById(roll);
+      if (!user) throw { status: 400, message: 'User not found' };
+
+      const otp = otpGenerator();
+
+      const promises = [];
+
+      promises.push(
+        otpModel.updateOne({ _id: roll }, { otp }, { upsert: true, setDefaultsOnInsert: true })
+      );
+      promises.push(MailerService.sendPasswordResetEmail(user.email, user.name, otp));
+      await Promise.all(promises);
+    } catch (err) {
+      l.error('[FORGOT PASSWORD]', err, roll);
+      throw err;
+    }
+  }
+
+  /**
+   *
+   * @param {string} roll Roll number of students to
+   * @param {integer} otp OTP to reset password
+   * @param {string} password new password
+   */
+  async resetPassword(roll, otp, password) {
+    try {
+      const user = await userModel.findById(roll);
+      if (!user) throw { status: 400, message: 'User not found' };
+
+      const otpFind = await otpModel.findById(roll);
+      if (otpFind.otp !== otp) throw { status: 400, message: 'Invalid OTP' };
+
+      const hash = await bcrypt.hash(password, saltRounds);
+
+      const promises = [];
+      promises.push(
+        userModel.findByIdAndUpdate(roll, {
+          password: hash,
+        })
+      );
+      promises.push(otpModel.findByIdAndDelete(roll));
+      await Promise.all(promises);
+    } catch (err) {
+      l.error('[RESET PASSWORD]', err, roll);
+      throw err;
+    }
   }
 }
 
