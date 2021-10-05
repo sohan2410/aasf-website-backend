@@ -375,7 +375,7 @@ paths:
       security:
         - Bearer: []
       requestBody:
-        description: user ID
+        description: roll number of student
         content:
           application/json:
             schema:
@@ -387,7 +387,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: '#/components/schemas/AddAdminResponse'
         400:
           description: User not found
           content:
@@ -1070,3 +1070,10 @@ components:
         message:
           type: string
           example: Password Reset Successful!
+
+    AddAdminResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Admin added successfully
