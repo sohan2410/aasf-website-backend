@@ -92,6 +92,66 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /users/forgotPassword:
+    post:
+      tags:
+        - Users
+      servers:
+        - url: /
+      description: Forgot user's password
+      security:
+        - Bearer: []
+      requestBody:
+        description: Roll number
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordBody'
+        required: true
+      responses:
+        200:
+          description: Reset Email Sent Success Message Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForogtPasswordResponse'
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/resetPassword:
+    post:
+      tags:
+        - Users
+      servers:
+        - url: /
+      description: Reset user's password
+      security:
+        - Bearer: []
+      requestBody:
+        description: Roll number, OTP, new password and confirm password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordBody'
+        required: true
+      responses:
+        200:
+          description: Password reset success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordResponse'
+        400:
+          description: User not found/ Invalid OTP/ Invalid Password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /users/dp:
     put:
       tags:
@@ -961,8 +1021,52 @@ components:
     AddAdmin:
       type: object
       required:
-        - userId
+        - roll
       properties:
-        userId:
+        roll:
           type: string
           example: 2020IMG-016
+
+    ForgotPasswordBody:
+      type: object
+      required:
+        - roll
+      properties:
+        roll:
+          type: string
+          example: 2020IMG-016
+
+    ForogtPasswordResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Reset Email Sent Successful!
+
+    ResetPasswordBody:
+      type: object
+      required:
+        - roll
+        - otp
+        - newPassword
+        - confirmPassword
+      properties:
+        roll:
+          type: string
+          example: 2020IMG-016
+        otp:
+          type: number
+          example: 123456
+        newPassword:
+          type: string
+          example: aasf_iiitm
+        confirmPassword:
+          type: string
+          example: aasf_iiitm
+
+    ResetPasswordResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Password Reset Successful!
