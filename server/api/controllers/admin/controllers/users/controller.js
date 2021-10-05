@@ -22,7 +22,7 @@ export class Controller {
   }
   async addAdmin(req, res, next) {
     try {
-      await UsersService.addAdmin(req.body.userId);
+      await UsersService.addAdmin(req.body.roll);
       res.status(200).json({ message: 'Admin added successfully' });
     } catch (err) {
       next(err);

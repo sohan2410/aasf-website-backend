@@ -275,6 +275,9 @@ class UsersService {
       if (!user) throw { status: 400, message: 'User not found' };
 
       const otpFind = await otpModel.findById(roll);
+
+      if (!otpFind) throw { status: 400, message: 'Please request for a new OTP first' };
+
       if (otpFind.otp !== otp) throw { status: 400, message: 'Invalid OTP' };
 
       const hash = await bcrypt.hash(password, saltRounds);
