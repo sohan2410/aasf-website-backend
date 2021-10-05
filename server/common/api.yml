@@ -99,8 +99,6 @@ paths:
       servers:
         - url: /
       description: Forgot user's password
-      security:
-        - Bearer: []
       requestBody:
         description: Roll number
         content:
@@ -129,8 +127,6 @@ paths:
       servers:
         - url: /
       description: Reset user's password
-      security:
-        - Bearer: []
       requestBody:
         description: Roll number, OTP, new password and confirm password
         content:
@@ -146,7 +142,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResetPasswordResponse'
         400:
-          description: User not found/ Invalid OTP/ Invalid Password
+          description: User not found/ Invalid OTP/ Invalid Password/ Request for a new OTP first
           content:
             application/json:
               schema:
