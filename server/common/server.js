@@ -16,7 +16,7 @@ const app = new Express();
 const exit = process.exit;
 
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
+  windowMs: process.env.NODE_ENV === 'test' ? process.env.RATE_LIMIT_TEST : process.env.RATE_LIMIT, // 10 seconds : 10 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
 
