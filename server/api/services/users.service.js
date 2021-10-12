@@ -248,12 +248,28 @@ class UsersService {
       const user = await userModel.findById(roll);
       if (!user) throw { status: 400, message: 'User not found' };
 
+      const otpFind = await otpModel.findById(roll);
+
+      if (otpFind) {
+        if (new Date() - otpFind.updatedAt < 300000) {
+          // less than 5 minutes = 300000 milliseconds
+          throw { status: 400, message: 'Please Request after 5 minutes' };
+        }
+
+        if (otpFind.counter >= 3) {
+          throw { status: 400, message: 'Maximum OTP request limit reached. Try after 1 hour' };
+        }
+      }
       const otp = otpGenerator();
 
       const promises = [];
 
       promises.push(
-        otpModel.updateOne({ _id: roll }, { otp }, { upsert: true, setDefaultsOnInsert: true })
+        otpModel.updateOne(
+          { _id: roll },
+          { otp, $inc: { counter: 1 } },
+          { upsert: true, setDefaultsOnInsert: true }
+        )
       );
       promises.push(MailerService.sendPasswordResetEmail(user.email, user.name, otp));
       await Promise.all(promises);
@@ -278,7 +294,10 @@ class UsersService {
 
       if (!otpFind) throw { status: 400, message: 'Please request for a new OTP first' };
 
-      if (otpFind.otp !== otp) throw { status: 400, message: 'Invalid OTP' };
+      if (otpFind.otp !== otp) {
+        otpFind.findByIdAndUpdate(roll, { $inc: { counter: 1 } });
+        throw { status: 400, message: 'Invalid OTP' };
+      }
 
       const hash = await bcrypt.hash(password, saltRounds);
 
