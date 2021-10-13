@@ -251,7 +251,7 @@ class UsersService {
       const otpFind = await otpModel.findById(roll);
 
       if (otpFind) {
-        if (new Date() - otpFind.updatedAt < 300) {
+        if (new Date() - otpFind.updatedAt < 300000) {
           // less than 5 minutes = 300000 milliseconds
           throw { status: 400, message: 'Please Request after 5 minutes' };
         }
