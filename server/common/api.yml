@@ -820,7 +820,7 @@ components:
               startDate:
                 type: string
               numberOfDays:
-                type: string
+                type: number
               category:
                 type: string
               attendance:
