@@ -294,12 +294,12 @@ class UsersService {
 
       if (!otpFind) throw { status: 400, message: 'Please request for a new OTP first' };
 
+      if (otpFind.counter >= 3) throw { status: 400, message: 'Maximum retries reached' };
+
       if (otpFind.otp !== otp) {
-        otpFind.findByIdAndUpdate(roll, { $inc: { counter: 1 } });
+        await otpModel.findByIdAndUpdate(roll, { $inc: { counter: 1 } });
         throw { status: 400, message: 'Invalid OTP' };
       }
-
-      if (otpFind.counter >= 3) throw { status: 400, message: 'Maximum retries reached' };
 
       const hash = await bcrypt.hash(password, saltRounds);
 
