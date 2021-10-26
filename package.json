@@ -11,7 +11,8 @@
     "test": "NODE_ENV=test RATE_LIMIT=10000 mocha --require @babel/register --exit",
     "test:debug": "mocha --require @babel/register --inspect-brk --exit",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "bcrypt": "^4.0.1",
@@ -44,15 +45,22 @@
     "babel-eslint": "^10.0.3",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.20.1",
     "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.2.0",
     "mocha": "^7.0.1",
     "nodemon": "^2.0.2",
     "pino-pretty": "^3.5.0",
+    "prettier": "^1.19.1",
     "supertest": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "author": "Team AASF <aasf.iiitmg@gmail.com> (https://github.com/source-aasf)"
 }
