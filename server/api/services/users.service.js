@@ -281,7 +281,7 @@ class UsersService {
 
   /**
    *
-   * @param {string} roll Roll number of students to
+   * @param {string} roll Roll number of the student
    * @param {integer} otp OTP to reset password
    * @param {string} password new password
    */
@@ -298,6 +298,8 @@ class UsersService {
         otpFind.findByIdAndUpdate(roll, { $inc: { counter: 1 } });
         throw { status: 400, message: 'Invalid OTP' };
       }
+
+      if (otpFind.counter >= 3) throw { status: 400, message: 'Maximum retries reached' };
 
       const hash = await bcrypt.hash(password, saltRounds);
 
