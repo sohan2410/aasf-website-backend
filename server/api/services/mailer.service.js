@@ -67,8 +67,8 @@ class MailerService {
       const mailOptions = {
         from: emailId,
         to: userEmailId,
-        subject: `OTP to reset password`,
-        text: otpTemplate(userName, otp),
+        subject: `OTP to Reset AASF Account Password`,
+        html: otpTemplate(userName, otp),
       };
       this.triggerMail(mailOptions);
     } catch (err) {
