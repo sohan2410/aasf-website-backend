@@ -2,10 +2,11 @@ import nodemailer from 'nodemailer';
 
 import l from '../../common/logger';
 import { emailId, emailPassword } from '../../common/config';
-import { reportRecipients, aasf, dev } from '../../utils/emailRecipients';
+import { reportRecipients, aasf, dev, eventRecipients } from '../../utils/emailRecipients';
 import { reportTempate } from '../../utils/emailTemplates/report';
 import { suggestionTemplate } from '../../utils/emailTemplates/suggestion';
 import { otpTemplate } from '../../utils/emailTemplates/otpTemplate';
+import { eventTemplate } from '../../utils/emailTemplates/eventTemplate';
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -69,6 +70,27 @@ class MailerService {
         to: userEmailId,
         subject: `OTP to Reset AASF Account Password`,
         html: otpTemplate(userName, otp),
+      };
+      this.triggerMail(mailOptions);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   *
+   * @param {string} emailId Email id of user
+   * @param {string} eventName Event name of the event
+   * @param {time} time Time left for the event
+   * @param {string} link Link for the event
+   */
+  async sendEventReminder(text, eventName, link) {
+    try {
+      const mailOptions = {
+        from: emailId,
+        to: eventRecipients,
+        subject: `Reminder - ${eventName}`,
+        html: eventTemplate(text, link),
       };
       this.triggerMail(mailOptions);
     } catch (err) {

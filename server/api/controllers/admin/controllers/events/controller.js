@@ -94,5 +94,17 @@ export class Controller {
     EventsService.clearAttendances();
     res.status(200).json({ message: 'Attendances cleared successfully' });
   }
+
+  async sendEventReminder(req, res, next) {
+    try {
+      const { text, eventName, link } = req.body;
+
+      await MailerService.sendEventReminder(text, eventName, link);
+
+      res.status(200).json({ message: 'Mail sent successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 export default new Controller();
