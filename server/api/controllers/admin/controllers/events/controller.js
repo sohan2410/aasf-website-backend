@@ -97,9 +97,9 @@ export class Controller {
 
   async sendEventReminder(req, res, next) {
     try {
-      const { text, link } = req.body;
+      const { text, eventName, link } = req.body;
 
-      await MailerService.eventReminder(text, link);
+      await MailerService.sendEventReminder(text, eventName, link);
 
       res.status(200).json({ message: 'Mail sent successfully' });
     } catch (error) {

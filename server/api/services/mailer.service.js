@@ -84,12 +84,12 @@ class MailerService {
    * @param {time} time Time left for the event
    * @param {string} link Link for the event
    */
-  async sendEventReminder(text, link) {
+  async sendEventReminder(text, eventName, link) {
     try {
       const mailOptions = {
         from: emailId,
         to: eventRecipients,
-        subject: `Event reminder!`,
+        subject: `Reminder - ${eventName}`,
         html: eventTemplate(text, link),
       };
       this.triggerMail(mailOptions);
