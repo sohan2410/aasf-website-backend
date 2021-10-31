@@ -6,6 +6,7 @@ import { reportRecipients, aasf, dev } from '../../utils/emailRecipients';
 import { reportTempate } from '../../utils/emailTemplates/report';
 import { suggestionTemplate } from '../../utils/emailTemplates/suggestion';
 import { otpTemplate } from '../../utils/emailTemplates/otpTemplate';
+import { eventTemplate } from '../../utils/emailTemplates/eventTemplate';
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -69,6 +70,27 @@ class MailerService {
         to: userEmailId,
         subject: `OTP to Reset AASF Account Password`,
         html: otpTemplate(userName, otp),
+      };
+      this.triggerMail(mailOptions);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   *
+   * @param {string} emailId Email id of user
+   * @param {string} eventName Event name of the event
+   * @param {time} time Time left for the event
+   * @param {string} link Link for the event
+   */
+  async sendEventReminder(emailId, eventName, time, link) {
+    try {
+      const mailOptions = {
+        from: emailId,
+        to: userEmailId,
+        subject: `${eventName} reminder!`,
+        html: eventTemplate(eventName, time, link),
       };
       this.triggerMail(mailOptions);
     } catch (err) {

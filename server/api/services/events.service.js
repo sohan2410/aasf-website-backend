@@ -7,6 +7,7 @@ import userModel from '../../models/user';
 import eventModel from '../../models/event';
 import achievementModel from '../../models/achievement';
 import { encryptionKey, encryptionAlgorithm } from '../../common/config';
+import MailerService from './mailer.service';
 
 class EventsService {
   constructor() {
@@ -163,7 +164,7 @@ class EventsService {
               eventId,
               position: index + 1,
             })
-          )
+          );
         });
         promises.push(
           userModel.updateMany(
@@ -314,6 +315,23 @@ class EventsService {
       l.error('[MARK ATTENDANCE]', err, roll, hash);
       if (err.inApp) throw err;
       else throw { message: 'Invalid QR', status: 400 };
+    }
+  }
+
+  /**
+   *
+   * @param {string} eventName Name of the event
+   * @param {string} time Time left for the event
+   * @param {link} link Link for the event
+   */
+  async eventReminder(eventName, time, link) {
+    try {
+      const users = await userModel.find();
+      users.forEach(async user => {
+        await MailerService.sendEventReminder(user.email, eventName, time, link);
+      });
+    } catch (err) {
+      l.error('[EVENT REMINDER]', eventName, time, link);
     }
   }
 }
