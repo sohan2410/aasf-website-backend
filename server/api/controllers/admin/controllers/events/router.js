@@ -36,4 +36,4 @@ export default express
   .post('/attendance/upload', upload.any(), controller.uploadAttendance)
   .post('/goodies', controller.addGoodies)
   .post('/winners', controller.addWinners)
-  .post('/eventReminder', controller.eventReminder);
+  .post('/sendEventReminder', controller.sendEventReminder);

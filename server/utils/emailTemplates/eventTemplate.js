@@ -1,4 +1,4 @@
-export const eventTemplate = (eventName, time, link) => `
+export const eventTemplate = (text, link) => `
 <div id=":12y" class="ii gt">
     <div id=":12z" class="a3s aXjCH">
       <div dir="ltr">
@@ -143,7 +143,7 @@ export const eventTemplate = (eventName, time, link) => `
                     <p>
                       Hey,
                       <br>
-                      This is to remind you that the event, ${eventName}, organized by AASF, will begin shortly in ${time}.
+                        ${text}
                     </p>
                     <p>Click on the button below to join the event</p>
                     <div style="

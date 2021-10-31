@@ -317,23 +317,6 @@ class EventsService {
       else throw { message: 'Invalid QR', status: 400 };
     }
   }
-
-  /**
-   *
-   * @param {string} eventName Name of the event
-   * @param {string} time Time left for the event
-   * @param {link} link Link for the event
-   */
-  async eventReminder(eventName, time, link) {
-    try {
-      const users = await userModel.find();
-      users.forEach(async user => {
-        await MailerService.sendEventReminder(user.email, eventName, time, link);
-      });
-    } catch (err) {
-      l.error('[EVENT REMINDER]', eventName, time, link);
-    }
-  }
 }
 
 export default new EventsService();
