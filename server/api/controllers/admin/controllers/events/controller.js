@@ -1,6 +1,6 @@
 import EventsService from '../../../../services/events.service';
 import l from '../../../../../common/logger';
-
+import MailerService from '../../../../services/mailer.service';
 export class Controller {
   async uploadEvents(req, res, next) {
     try {
