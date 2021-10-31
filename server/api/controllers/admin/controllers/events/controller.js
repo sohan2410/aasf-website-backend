@@ -1,6 +1,6 @@
 import EventsService from '../../../../services/events.service';
 import l from '../../../../../common/logger';
-
+import MailerService from '../../../../services/mailer.service';
 export class Controller {
   async uploadEvents(req, res, next) {
     try {
@@ -93,6 +93,18 @@ export class Controller {
   async clearAttendances(_, res) {
     EventsService.clearAttendances();
     res.status(200).json({ message: 'Attendances cleared successfully' });
+  }
+
+  async sendEventReminder(req, res, next) {
+    try {
+      const { text, eventName, link } = req.body;
+
+      await MailerService.sendEventReminder(text, eventName, link);
+
+      res.status(200).json({ message: 'Mail sent successfully' });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 export default new Controller();

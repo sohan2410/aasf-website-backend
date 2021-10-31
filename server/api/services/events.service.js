@@ -7,6 +7,7 @@ import userModel from '../../models/user';
 import eventModel from '../../models/event';
 import achievementModel from '../../models/achievement';
 import { encryptionKey, encryptionAlgorithm } from '../../common/config';
+import MailerService from './mailer.service';
 
 class EventsService {
   constructor() {
@@ -163,7 +164,7 @@ class EventsService {
               eventId,
               position: index + 1,
             })
-          )
+          );
         });
         promises.push(
           userModel.updateMany(
