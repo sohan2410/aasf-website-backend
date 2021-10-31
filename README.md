@@ -125,3 +125,16 @@ Fix all prettier linter errors
 ```
 npm run lint
 ```
+
+## Contributors
+
+<br/>
+<table>
+	<tr>
+		<td>
+			<a href="https://github.com/AASF-IIITM/aasf-website-backend/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=AASF-IIITM/aasf-website-backend" />
+</a>
+		</td>
+	</tr>
+</table>
