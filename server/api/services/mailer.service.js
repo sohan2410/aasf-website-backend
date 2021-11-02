@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 import l from '../../common/logger';
 import { emailId, emailPassword } from '../../common/config';
-import { reportRecipients, aasf, dev, eventRecipients } from '../../utils/emailRecipients';
+import { reportRecipients, aasf, dev } from '../../utils/emailRecipients';
 import { reportTempate } from '../../utils/emailTemplates/report';
 import { suggestionTemplate } from '../../utils/emailTemplates/suggestion';
 import { otpTemplate } from '../../utils/emailTemplates/otpTemplate';
@@ -59,7 +59,7 @@ class MailerService {
   }
 
   /**
-   *
+   *  Send OTP to the user
    * @param {string} mail - mailId of student
    * @param {integer} otp - otp
    */
@@ -78,13 +78,13 @@ class MailerService {
   }
 
   /**
-   *
-   * @param {string} emailId Email id of user
-   * @param {string} eventName Event name of the event
-   * @param {time} time Time left for the event
+   * Send event reminder email
+   * @param {array} eventRecipients Strings of array containing email recipients
+   * @param {string} text Text to be sent
+   * @param {string} eventName Event Name
    * @param {string} link Link for the event
    */
-  async sendEventReminder(text, eventName, link) {
+  async sendEventReminder(eventRecipients, text, eventName, link) {
     try {
       const mailOptions = {
         from: emailId,
