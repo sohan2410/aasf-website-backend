@@ -661,7 +661,7 @@ paths:
       security:
         - Bearer: []
       requestBody:
-        description: 2D array of Recipients, Text, Event Name and Link for the event
+        description: Array of Recipients, Text, Event Name and Link for the event
         content:
           application/json:
             schema:
@@ -1047,12 +1047,11 @@ components:
         - text
         - eventName
         - link
-        - winners
       properties:
         eventRecipients:
           type: array
           items:
-            description: 2D Array of recipients
+            description: Array of recipients
             type: string
             items:
               type: string
