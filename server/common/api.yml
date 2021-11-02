@@ -661,7 +661,7 @@ paths:
       security:
         - Bearer: []
       requestBody:
-        description: 2D array of Recipients, Text, Event Name and Link for the event
+        description: Array of Recipients, Text, Event Name and Link for the event
         content:
           application/json:
             schema:
@@ -1047,19 +1047,14 @@ components:
         - text
         - eventName
         - link
-        - winners
       properties:
         eventRecipients:
           type: array
+          description: Array of recipients
           items:
-            description: 2D Array of recipients
             type: string
-            items:
-              type: string
-              description: Email Recipients
-              example: bcs_201831@iiitm.ac.in
-          example:
-            [' bcs_201831@iiitm.ac.in', 'gunashekherproddatoori@gmail.com', 'aasf.iiitmg@gmail.com']
+            description: Email Recipients
+            example: bcs_201831@iiitm.ac.in
         text:
           type: string
           example: 'This is to remind you that the event, <event name>, organized by AASF, will begin shortly in <time>. Click on the button below to join the event'
