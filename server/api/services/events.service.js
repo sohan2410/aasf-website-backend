@@ -297,8 +297,8 @@ class EventsService {
 
       //Update the student's score
       const update = {};
-      update[`score.${eventData.category}`] = eventData.importance * 5 + 5;
-      update['totalScore'] = eventData.importance * 5 + 5;
+      update[`score.${eventData.category}`] = eventData.importance * 5;
+      update['totalScore'] = eventData.importance * 5;
       const user = userModel.findByIdAndUpdate(roll, {
         $inc: update,
       });
