@@ -1000,6 +1000,9 @@ components:
           enum: [technical, managerial, oratory, miscellaneous]
         importance:
           type: number
+        joinLink:
+          type: string
+          example: Event URL(Meet Link, Contest Page etc). Please add only 1 link.
 
     QRResponse:
       type: object

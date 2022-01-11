@@ -1,15 +1,15 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const Event = new mongoose.Schema({
   //Name of the event
   name: {
     type: String,
-    required: [true, "Name required"],
+    required: [true, 'Name required'],
   },
   //Start Date for the event
   startDate: {
     type: String,
-    required: [true, "Date required"],
+    required: [true, 'Date required'],
   },
   //Number of days the event is going to last
   numberOfDays: {
@@ -20,7 +20,7 @@ const Event = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ["technical", "oratory", "managerial", "miscellaneous"],
+    enum: ['technical', 'oratory', 'managerial', 'miscellaneous'],
     lowercase: true,
   },
   //Attendance for each day of the event, i.e., attendace[0] will have the attendance for Day 1,
@@ -47,6 +47,9 @@ const Event = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  joinLink: {
+    type: String,
+  },
 });
 
-export default mongoose.model("Event", Event);
+export default mongoose.model('Event', Event);
