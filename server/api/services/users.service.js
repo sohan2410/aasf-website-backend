@@ -256,7 +256,7 @@ class UsersService {
           throw { status: 400, message: 'Please Request after 5 minutes' };
         }
 
-        if (otpFind.counter >= 3) {
+        if (otpFind.counter > 3) {
           throw { status: 400, message: 'Maximum OTP request limit reached. Try after 1 hour' };
         }
       }
@@ -294,7 +294,7 @@ class UsersService {
 
       if (!otpFind) throw { status: 400, message: 'Please request for a new OTP first' };
 
-      if (otpFind.counter >= 3) throw { status: 400, message: 'Maximum retries reached' };
+      if (otpFind.counter > 3) throw { status: 400, message: 'Maximum retries reached' };
 
       if (otpFind.otp !== otp) {
         await otpModel.findByIdAndUpdate(roll, { $inc: { counter: 1 } });
