@@ -984,6 +984,8 @@ components:
           enum: [technical, managerial, oratory, miscellaneous]
         importance:
           type: number
+        joinLink:
+          type: string
 
     EditEventBody:
       type: object
