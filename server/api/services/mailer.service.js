@@ -66,7 +66,10 @@ class MailerService {
   async sendPasswordResetEmail(userEmailId, userName, otp) {
     try {
       const mailOptions = {
-        from: emailId,
+        from: {
+          name: "Abhigyan Abhikaushalam Students' Forum",
+          address: emailId,
+        },
         to: userEmailId,
         subject: `OTP to Reset AASF Account Password`,
         html: otpTemplate(userName, otp),
@@ -87,7 +90,10 @@ class MailerService {
   async sendEventReminder(eventRecipients, text, eventName, link) {
     try {
       const mailOptions = {
-        from: emailId,
+        from: {
+          name: "Abhigyan Abhikaushalam Students' Forum",
+          address: emailId,
+        },
         to: eventRecipients,
         subject: `Reminder - ${eventName}`,
         html: eventTemplate(text, link),
