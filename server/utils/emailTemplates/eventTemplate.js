@@ -141,11 +141,10 @@ export const eventTemplate = (text, link) => `
                   ">
                   <div style="line-height: inherit; vertical-align: middle">
                     <p>
-                      Hey,
+                      Hello everyone!
                       <br>
                         ${text}
                     </p>
-                    <p>Click on the button below to join the event</p>
                     <div style="
                     line-height: inherit;
                     margin-left: 20px;
@@ -167,7 +166,7 @@ export const eventTemplate = (text, link) => `
                         border: 1px solid rgb(173, 54, 93);
                         text-decoration-line: none;
                         color: rgb(173, 54, 93);
-                      " target="_blank"><span class="il">Link</span></a>
+                      " target="_blank"><span class="il">Click Here</span></a>
                       </div>
                     </div> 
                   </div>
