@@ -1,4 +1,4 @@
-export const reportTempate = (eventDetails) => `
+export const reportTempate = eventDetails => `
 Abhigyan Abhikaushalam Students' Forum
 \t.....coalescence of knowledge and skills
 
@@ -12,7 +12,7 @@ Time:
 ${eventDetails.time}
 
 ${eventDetails.organizersHeading}:
-${eventDetails.organizers.join("\n")}
+${eventDetails.organizers.join('\n')}
 
 ${eventDetails.description}
 

@@ -129,14 +129,24 @@ describe('User Operations(Change Password, Get Details, Leaderboard)', () => {
       .set('Authorization', `bearer ${token}`);
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
-    expect(response.body).to.have.all.keys('user', 'rank', 'achievements', 'message');
+    expect(response.body).to.have.all.keys(
+      'user',
+      'rank',
+      'achievements',
+      'message'
+    );
 
     expect(response.body.user).to.be.an('object');
     expect(response.body.rank).to.be.a('number');
     expect(response.body.achievements).to.be.an('array');
     expect(response.body.message).to.be.a('string');
 
-    expect(response.body.user).to.include.all.keys('_id', 'name', 'score', 'role');
+    expect(response.body.user).to.include.all.keys(
+      '_id',
+      'name',
+      'score',
+      'role'
+    );
     expect(response.body.user._id).to.be.a('string');
     expect(response.body.user.name).to.be.a('string');
     expect(response.body.user.score).to.be.an('object');
@@ -151,10 +161,18 @@ describe('User Operations(Change Password, Get Details, Leaderboard)', () => {
     expect(response.body).to.be.an('object');
     expect(response.status).to.equal(200);
 
-    expect(response.body).to.have.all.keys('totalScore', 'leaderboard', 'message');
+    expect(response.body).to.have.all.keys(
+      'totalScore',
+      'leaderboard',
+      'message'
+    );
 
     expect(response.body.totalScore).to.be.an('object');
-    expect(response.body.totalScore).to.have.all.keys('technical', 'managerial', 'oratory');
+    expect(response.body.totalScore).to.have.all.keys(
+      'technical',
+      'managerial',
+      'oratory'
+    );
 
     expect(response.body.totalScore.technical)
       .to.be.a('number')

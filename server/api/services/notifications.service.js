@@ -21,7 +21,10 @@ class NotificationsService {
   async pushNotification(title, body, imageUrl) {
     try {
       //Fetch only those users whose FCM token is defined in the database.
-      const users = await userModel.find({ fcmToken: { $exists: true } }, 'fcmToken');
+      const users = await userModel.find(
+        { fcmToken: { $exists: true } },
+        'fcmToken'
+      );
       const tokens = users.map(user => user.fcmToken);
 
       await admin.messaging().sendMulticast({

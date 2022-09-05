@@ -1,5 +1,4 @@
 import EventsService from '../../../../services/events.service';
-import l from '../../../../../common/logger';
 import MailerService from '../../../../services/mailer.service';
 export class Controller {
   async uploadEvents(req, res, next) {
@@ -23,7 +22,10 @@ export class Controller {
 
   async editEventDetails(req, res, next) {
     try {
-      const event = await EventsService.editEventDetails(req.params.id, req.body);
+      const event = await EventsService.editEventDetails(
+        req.params.id,
+        req.body
+      );
       res.status(200).json({ event, message: 'Event Updated Successfully' });
     } catch (err) {
       next(err);
@@ -83,7 +85,10 @@ export class Controller {
 
   async generateQRCode(req, res, next) {
     try {
-      const qr = await EventsService.generateQRCode(req.params.id, req.params.day);
+      const qr = await EventsService.generateQRCode(
+        req.params.id,
+        req.params.day
+      );
       res.status(200).json({ qr, message: 'QR Code generated Successfully' });
     } catch (err) {
       next(err);
@@ -99,7 +104,12 @@ export class Controller {
     try {
       const { eventRecipients, text, eventName, link } = req.body;
 
-      await MailerService.sendEventReminder(eventRecipients, text, eventName, link);
+      await MailerService.sendEventReminder(
+        eventRecipients,
+        text,
+        eventName,
+        link
+      );
 
       res.status(200).json({ message: 'Mail sent successfully' });
     } catch (error) {

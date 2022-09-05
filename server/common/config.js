@@ -15,4 +15,5 @@ export const xssOptions = {
 };
 export const emailId = process.env.EMAIL_ID;
 export const emailPassword = process.env.EMAIL_PASSWORD;
-export const azureStorageConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+export const azureStorageConnectionString =
+  process.env.AZURE_STORAGE_CONNECTION_STRING;
