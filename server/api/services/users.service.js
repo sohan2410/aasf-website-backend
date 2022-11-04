@@ -20,7 +20,9 @@ class UsersService {
    */
   async uploadUsers(file) {
     try {
-      const users = await csv().fromFile(__dirname + `/../../../public/users/${file}`);
+      const users = await csv().fromFile(
+        __dirname + `/../../../public/users/${file}`
+      );
       const hash = await bcrypt.hash(defaultPassword, saltRounds);
       users.forEach(user => {
         let roll = user['_id'];
@@ -70,7 +72,10 @@ class UsersService {
       const user = await userModel.findById(roll);
       if (!user) throw { status: 400, message: 'User not found' };
 
-      const verifyPassword = await bcrypt.compare(currentPassword, user.password);
+      const verifyPassword = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
       if (!verifyPassword) throw { status: 401, message: 'Invalid Password' };
 
       const hash = await bcrypt.hash(newPassword, saltRounds);
@@ -86,14 +91,14 @@ class UsersService {
   /**
    * Change Profile Picture of a user
    * @param {String} roll - Roll number of the student
-   * @param {String} fileName - Name of the file saved on Azure
+   * @param {String} fileUrl - URL of the file saved on Cloudinary
    */
-  async changeProfilePicture(roll, fileName) {
+  async changeProfilePicture(roll, fileUrl) {
     try {
       const user = await userModel.findByIdAndUpdate(
         roll,
         {
-          dp: `https://aasf.azureedge.net/dps/${fileName}`,
+          dp: fileUrl,
         },
         { new: true, select: { password: 0 } }
       );
@@ -115,7 +120,7 @@ class UsersService {
       const user = await userModel.findByIdAndUpdate(roll, { fcmToken });
       if (!user) throw { status: 400, message: 'User does not exist' };
       return user;
-    } catch {
+    } catch (err) {
       l.error('[CHANGE FCM Token]', err, roll);
       throw err;
     }
@@ -187,7 +192,10 @@ class UsersService {
         $or: [{ qr: true }, { winners: true }],
       });
 
-      const [leaderboard, events] = await Promise.all([leaderboardPromise, eventsPromise]);
+      const [leaderboard, events] = await Promise.all([
+        leaderboardPromise,
+        eventsPromise,
+      ]);
 
       //Calculate the highest possible score.
       const totalScore = {
@@ -196,8 +204,11 @@ class UsersService {
         oratory: 0,
       };
       events.forEach(event => {
-        if (event.qr) totalScore[event.category] += (event.importance * 5 + 5) * event.numberOfDays;
-        if (event.winners) totalScore[event.category] += event.importance * 5 + 10;
+        if (event.qr)
+          totalScore[event.category] +=
+            (event.importance * 5 + 5) * event.numberOfDays;
+        if (event.winners)
+          totalScore[event.category] += event.importance * 5 + 10;
       });
 
       return { leaderboard, totalScore };
@@ -213,7 +224,9 @@ class UsersService {
    */
   async addAdmin(user) {
     try {
-      const newAdmin = await userModel.findByIdAndUpdate(user, { role: 'admin' });
+      const newAdmin = await userModel.findByIdAndUpdate(user, {
+        role: 'admin',
+      });
       if (!newAdmin) throw { status: 400, message: 'User not found' };
     } catch (err) {
       l.error('[ADD ADMIN]', err, user);
@@ -257,7 +270,10 @@ class UsersService {
         }
 
         if (otpFind.counter > 3) {
-          throw { status: 400, message: 'Maximum OTP request limit reached. Try after 1 hour' };
+          throw {
+            status: 400,
+            message: 'Maximum OTP request limit reached. Try after 1 hour',
+          };
         }
       }
       const otp = otpGenerator();
@@ -271,7 +287,9 @@ class UsersService {
           { upsert: true, setDefaultsOnInsert: true }
         )
       );
-      promises.push(MailerService.sendPasswordResetEmail(user.email, user.name, otp));
+      promises.push(
+        MailerService.sendPasswordResetEmail(user.email, user.name, otp)
+      );
       await Promise.all(promises);
     } catch (err) {
       l.error('[FORGOT PASSWORD]', err, roll);
@@ -292,9 +310,11 @@ class UsersService {
 
       const otpFind = await otpModel.findById(roll);
 
-      if (!otpFind) throw { status: 400, message: 'Please request for a new OTP first' };
+      if (!otpFind)
+        throw { status: 400, message: 'Please request for a new OTP first' };
 
-      if (otpFind.counter > 3) throw { status: 400, message: 'Maximum retries reached' };
+      if (otpFind.counter > 3)
+        throw { status: 400, message: 'Maximum retries reached' };
 
       if (otpFind.otp !== otp) {
         await otpModel.findByIdAndUpdate(roll, { $inc: { counter: 1 } });

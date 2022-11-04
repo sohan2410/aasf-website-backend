@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { defaultPassword } from '../common/config';
 
 const User = new mongoose.Schema({
   //Primary Key of the user will be their roll number
