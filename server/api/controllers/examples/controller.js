@@ -8,7 +8,7 @@ export class Controller {
 
   async byId(req, res) {
     const r = ExamplesService.byId(req.params.id);
-    if(r) res.json(r);
+    if (r) res.json(r);
     else res.status(404).end();
   }
 
@@ -17,7 +17,7 @@ export class Controller {
     res
       .status(201)
       .location(`/api/v1/examples/${r.id}`)
-      .json(r)
+      .json(r);
   }
 }
 export default new Controller();

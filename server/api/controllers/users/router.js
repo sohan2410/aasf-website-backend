@@ -1,31 +1,35 @@
 import * as express from 'express';
 import multer from 'multer';
-import multerAzure from 'multer-azure';
+import Cloudinary from 'cloudinary';
 
 import controller from './controller';
 
 import isAuthenticated from '../../middlewares/isAuthenticated';
 
-import { azureStorageConnectionString, azureAccountName, azureKey } from '../../../common/config';
-
-const storage = multerAzure({
-  connectionString: azureStorageConnectionString, //Connection String for azure storage account, this one is prefered if you specified, fallback to account and key if not.
-  container: 'dps', //Any container name, it will be created if it doesn't exist
-  blobPathResolver: (req, file, callback) => {
-    const blobPath = `${req.user.roll}.${file.mimetype.split('/')[1]}`; //Calculate blobPath in your own way.
-    callback(null, blobPath);
+const imageStorage = multer.diskStorage({
+  destination: function(_, __, callback) {
+    callback(null, __dirname + '../../../../../public/dps');
+  },
+  filename: function(_, file, callback) {
+    callback(null, file.originalname);
   },
 });
 
-const fileFilter = (req, file, callback) => {
+const fileFilter = (_, file, callback) => {
   if (!/(jpe?g|tiff|png)$/i.test(file.mimetype))
-    return callback(new Error('Please upload a valid jpg, jpeg or png image'), false);
+    return callback(
+      new Error('Please upload a valid jpg, jpeg or png image'),
+      false
+    );
   else return callback(null, true);
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
+var upload = multer({ storage: imageStorage, fileFilter: fileFilter });
+
+Cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 export default express
@@ -33,7 +37,12 @@ export default express
   .post('/login', controller.login)
   .post('/suggestions', isAuthenticated, controller.sendSuggestion)
   .put('/password', isAuthenticated, controller.changePassword)
-  .put('/dp', isAuthenticated, upload.single('dp'), controller.changeProfilePicture)
+  .put(
+    '/dp',
+    isAuthenticated,
+    upload.single('dp'),
+    controller.changeProfilePicture
+  )
   .put('/fcmToken', isAuthenticated, controller.changeFcmToken)
   .get('/details', isAuthenticated, controller.getUserDetails)
   .get('/leaderboard', isAuthenticated, controller.getLeaderboard)

@@ -44,18 +44,14 @@ class MailerService {
    * @param {string} roll - Roll number of the student or null if anonymous
    */
   async sendSuggestion(suggestion, roll) {
-    try {
-      const mailOptions = {
-        from: emailId,
-        to: aasf,
-        bcc: dev,
-        subject: `[SUGGESTION] Suggestion from a student`,
-        text: suggestionTemplate(suggestion, roll ?? 'a friendly student'),
-      };
-      this.triggerMail(mailOptions);
-    } catch (err) {
-      throw err;
-    }
+    const mailOptions = {
+      from: emailId,
+      to: aasf,
+      bcc: dev,
+      subject: `[SUGGESTION] Suggestion from a student`,
+      text: suggestionTemplate(suggestion, roll ?? 'a friendly student'),
+    };
+    this.triggerMail(mailOptions);
   }
 
   /**
@@ -64,20 +60,16 @@ class MailerService {
    * @param {integer} otp - otp
    */
   async sendPasswordResetEmail(userEmailId, userName, otp) {
-    try {
-      const mailOptions = {
-        from: {
-          name: "Abhigyan Abhikaushalam Students' Forum",
-          address: emailId,
-        },
-        to: userEmailId,
-        subject: `OTP to Reset AASF Account Password`,
-        html: otpTemplate(userName, otp),
-      };
-      this.triggerMail(mailOptions);
-    } catch (err) {
-      throw err;
-    }
+    const mailOptions = {
+      from: {
+        name: "Abhigyan Abhikaushalam Students' Forum",
+        address: emailId,
+      },
+      to: userEmailId,
+      subject: `OTP to Reset AASF Account Password`,
+      html: otpTemplate(userName, otp),
+    };
+    this.triggerMail(mailOptions);
   }
 
   /**
@@ -88,27 +80,19 @@ class MailerService {
    * @param {string} link Link for the event
    */
   async sendEventReminder(eventRecipients, text, eventName, link) {
-    try {
-      const mailOptions = {
-        from: {
-          name: "Abhigyan Abhikaushalam Students' Forum",
-          address: emailId,
-        },
-        to: eventRecipients,
-        subject: `Reminder - ${eventName}`,
-        html: eventTemplate(text, link),
-      };
-      this.triggerMail(mailOptions);
-    } catch (err) {
-      throw err;
-    }
+    const mailOptions = {
+      from: {
+        name: "Abhigyan Abhikaushalam Students' Forum",
+        address: emailId,
+      },
+      to: eventRecipients,
+      subject: `Reminder - ${eventName}`,
+      html: eventTemplate(text, link),
+    };
+    this.triggerMail(mailOptions);
   }
   async triggerMail(mailOptions) {
-    try {
-      await transporter.sendMail(mailOptions);
-    } catch (err) {
-      throw err;
-    }
+    await transporter.sendMail(mailOptions);
   }
 }
 
